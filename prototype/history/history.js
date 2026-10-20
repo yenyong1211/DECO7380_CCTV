@@ -1,5 +1,5 @@
-import { people, history } from './data.js?v=eufy-4';
-import { setupShell, updateShell, nativeView, eventsHeader, bindEventsCalendar, getEventDay, getEventRange } from '../shell.js?v=eufy-4';
+import { people, history } from './data.js?v=eufy-5';
+import { setupShell, updateShell, nativeView, eventsHeader, bindEventsCalendar, getEventDay, getEventRange } from '../shell.js?v=eufy-5';
 const app = document.querySelector('#app');
 const storageKey = 'cctv.prototype.permissions.v1';
 let permissions = {};
@@ -56,7 +56,7 @@ function permissionView(id) {
 }
 let noticeTimer;
 function announce(message){const notice=document.querySelector('#notice');notice.textContent=message;notice.classList.add('visible');clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>notice.classList.remove('visible'),2200);}
-function route(){const path=location.hash.slice(1)||'home';updateShell(path);const match=path.match(/^(?:history|events)\/permissions\/(emma|james)$/);if(match)permissionView(match[1]);else if(path==='history'||path==='events/access')historyView();else nativeView(['home','events','services','smart','shop','messages','notifications'].includes(path)?path:'home',app);window.scrollTo(0,0);}
+function route(){const path=location.hash.slice(1)||'home';updateShell(path);const match=path.match(/^(?:history|events)\/permissions\/(emma|james)$/);if(match)permissionView(match[1]);else if(path==='history'||path==='events/access')historyView();else nativeView(path.startsWith('device/')||['home','events','services','smart','shop','messages','notifications'].includes(path)?path:'home',app);window.scrollTo(0,0);}
 app.addEventListener('click',event=>{const button=event.target.closest('[data-permission]');if(button)location.hash=`events/permissions/${button.dataset.permission}`;});
 window.addEventListener('hashchange',()=>{route();app.querySelector('h1')?.focus();});
 setupShell();

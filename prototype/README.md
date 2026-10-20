@@ -6,13 +6,17 @@ Live entry: https://yenyong1211.github.io/DECO7380_CCTV/prototype/
 
 ## Navigation and reference content
 
-The original five sections remain Home, Events, Services, Smart and Shop. The reference empty states, Space Status, Device Health, Modes, Automation label, shop promotion text and account-menu labels are retained. Illustrations and product graphics are recreated with SVG/CSS rather than the proprietary app's original image assets.
+The original five sections remain Home, Events, Services, Smart and Shop. The reference Events empty state, Space Status, Device Health, Modes, Automation label, shop promotion text and account-menu labels are retained, except Help, which has been removed as requested. Illustrations and product graphics are recreated with SVG/CSS rather than the proprietary app's original image assets.
 
 Access History is integrated directly into Events as an added secondary tab: **Events → Camera Events / Access History**. Both views share the existing date arrows, calendar and time range. The original five primary navigation items remain unchanged; there is no additional standalone History item or Home shortcut.
 
 The header's Messages button opens the Messages page. Its settings button opens Notifications, with reference states Allow Notifications: On, Email: Off, APP Notification: Off. The plus button opens Add Device, Add Favorites and Scan QR Code. The calendar supports selecting an October date and returning to the reference today (October 21, 2026).
 
 Existing eufy actions outside the provided screens show an explanatory dialog. Device pairing, shopping, QR scanning, email subscriptions and real account notifications are not connected. This keeps the demonstrated extension separate from actual product operations.
+
+## Indoor camera devices
+
+Home includes two demo Indoor Cam devices: Living Room and Front Door (facing the entrance from indoors). Each device has an illustrated preview, a camera detail view, and links to Access History and the corresponding member permissions (Emma for Living Room, James for Front Door). Services shows two devices. The cameras are illustrative prototype products, not connected hardware or claims about a particular eufy model.
 
 ## Access History interactions
 
