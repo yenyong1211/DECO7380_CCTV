@@ -67,3 +67,10 @@ Product images are loaded from the official eufy Shopify CDN and require an inte
 `products.js` contains the reference catalog and detail views. `auth.js` implements a **simulated viewer face-verification flow**, not actual facial recognition and not recognition of people in footage. Opening a camera requires a successful demo verification and a valid permission for that camera. Direct camera links also route through verification. Verified sessions expire after five minutes, end on demand, and recheck current permissions on opening a camera. A matched identity without camera permission is denied; an unmatched face is denied. No camera, face photographs, embeddings or biometric data are used or stored.
 
 Verification audit outcomes and successful camera visits are persisted locally and displayed in Events → Access History; seed records are illustrative demo samples. Verification does not grant an otherwise denied camera permission. This is coursework interaction logic in the browser, not production authentication or a claim that either product supports biometric access control. Real verification would require explicit enrollment, a suitable identity/liveness system and server-side enforcement.
+
+
+## Optional privacy guide (eufy-8)
+
+Open `#privacy` for Your data journey, People & access, and Keep, share or delete. Details: `#privacy/data-journey`, `#privacy/people-access`, `#privacy/keep-share-delete`. Basic policies, permissions and rights: `#privacy/basics`. Reopen from the menu via Settings → Privacy (`#settings`).
+
+The first Home visit shows this optional guide. Continue and Skip only save `cctv.prototype.privacy-intro.v1=seen` in this browser; unavailable storage falls back to session memory. Deep links are not intercepted. The guide never changes camera permissions, verification events, notification settings or consent. Face verification remains a simulation without biometric capture. Official links explain real product management separately from browser demo data.

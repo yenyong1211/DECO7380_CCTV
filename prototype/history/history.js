@@ -1,10 +1,14 @@
-import { initialiseStartupPermissions, canEnter, renderPermissionSettings } from '../onboarding/permissions.js?v=eufy-7';
-import { people, history } from './data.js?v=eufy-7';
-import { setupShell, updateShell, nativeView, eventsHeader, bindEventsCalendar, getEventDay, getEventRange } from '../shell.js?v=eufy-7';
+import { shouldShowPrivacyIntro, privacyView, settingsView } from '../privacy.js?v=eufy-8';
+import { verificationView, setDemoPermissions } from '../auth.js?v=eufy-8';
+import { productView } from '../products.js?v=eufy-8';
+import { initialiseStartupPermissions } from '../onboarding/permissions.js?v=eufy-8';
+import { people, history } from './data.js?v=eufy-8';
+import { setupShell, updateShell, nativeView, eventsHeader, bindEventsCalendar, getEventDay, getEventRange } from '../shell.js?v=eufy-8';
 const app = document.querySelector('#app');
 const storageKey = 'cctv.prototype.permissions.v1';
 let permissions = {};
 try { permissions = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch { /* A blocked storage policy must not prevent using the demo. */ }
+setDemoPermissions(permissions);
 let day = 21;
 const expanded = new Set(['emma']);
 const modes = [['original','Original view'],['faces','Hide faces'],['person','Hide whole person'],['none','No access']];
@@ -47,6 +51,7 @@ function permissionView(id) {
   document.querySelector('#back').addEventListener('click',()=>{location.hash='events/access';});
   app.querySelectorAll('input').forEach(input=>input.addEventListener('change',()=>{
     permissions[id]=input.value;
+    setDemoPermissions(permissions);
     let persisted=true;
     try{localStorage.setItem(storageKey,JSON.stringify(permissions));}catch{persisted=false;}
     document.querySelector('#preview').innerHTML=scene(id,input.value);
@@ -57,9 +62,25 @@ function permissionView(id) {
 }
 let noticeTimer;
 function announce(message){const notice=document.querySelector('#notice');notice.textContent=message;notice.classList.add('visible');clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>notice.classList.remove('visible'),2200);}
-function route(){const path=location.hash.slice(1)||'home';if(!canEnter()){updateShell('home');nativeView('home',app);return;}updateShell(path);if(path==='privacy-settings'){renderPermissionSettings(app);window.scrollTo(0,0);return;}const match=path.match(/^(?:history|events)\/permissions\/(emma|james)$/);if(match)permissionView(match[1]);else if(path==='history'||path==='events/access')historyView();else nativeView(path.startsWith('device/')||['home','events','services','smart','shop','messages','notifications'].includes(path)?path:'home',app);window.scrollTo(0,0);}
+function route(){
+ const path=location.hash.slice(1)||'home';
+ if(shouldShowPrivacyIntro(path)){historyReplacePrivacy();return;}
+ updateShell(path);
+ const match=path.match(/^(?:history|events)\/permissions\/(emma|james)$/);
+ if(path==='privacy'||path.startsWith('privacy/'))privacyView(app,path.split('/')[1]||'');
+ else if(path==='privacy-settings'){location.replace('#privacy/basics');return;}
+ else if(path==='settings')settingsView(app);
+ else if(match)permissionView(match[1]);
+ else if(path.startsWith('verify/'))verificationView(app,path.split('/')[1]);
+ else if(path.startsWith('product/'))productView(app,path.split('/')[1]);
+ else if(path==='history'||path==='events/access')historyView();
+ else nativeView(path.startsWith('device/')||['home','events','services','smart','shop','messages','notifications'].includes(path)?path:'home',app);
+ window.scrollTo(0,0);
+}
+function historyReplacePrivacy(){window.history.replaceState(null,'','#privacy');route();}
 app.addEventListener('click',event=>{const button=event.target.closest('[data-permission]');if(button)location.hash=`events/permissions/${button.dataset.permission}`;});
 window.addEventListener('hashchange',()=>{route();app.querySelector('h1')?.focus();});
 setupShell();
 route();
 initialiseStartupPermissions({ready:route,announce});
+

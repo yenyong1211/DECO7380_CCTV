@@ -1,3 +1,13 @@
+# Current privacy guide (eufy-8)
+
+The previous five-step confirmation workflow is retired. `privacy.js` now provides three optional educational guides plus basic privacy information. Reading or dismissing the guide does not accept terms or change permissions. Existing demo notification preferences remain readable without migration or automatic writes.
+
+Sources: [E30 storage](https://service.eufy.com/article-description/Indoor-Cam-E30-How-Do-I-Store-Video-Recordings-on-My-Camera), [E30 product and compatibility](https://www.eufy.com/au/products/indoor-cam-e30), [storage management](https://service.eufy.com/article-description/How-to-Clear-Storage-on-eufy-Device), [official Privacy Notice](https://www.eufy.com/au/policies/privacy-policy), [Terms of Use](https://www.eufy.com/au/policies/terms-of-service). Examples are labelled and do not detect real camera settings.
+
+The notes below document the earlier workflow only; they do not describe the current introduction.
+
+---
+
 # Reference sources and adaptation notes
 
 The English startup flow was added to the repository at commit recorded in INTEGRATION.md. It adapts the supplied eufy Clean screenshots to the existing eufy Security coursework website; it is not a verbatim reproduction of every screen in a current official app.
@@ -32,3 +42,4 @@ The website follows this structure in English, using responsive web dialogs rath
 - Important Security Alerts is a web-prototype preference. The cited sources do not verify a universal current iOS Critical Alerts capability for all eufy products. The UI makes no claim to override mute, Focus or Do Not Disturb.
 - Optional analytics is a demonstration choice, off by default. No analytics library or endpoint is connected.
 - All records remain in this browser's localStorage, with a session-memory fallback when storage is unavailable. This is not a production consent record or real device authorization.
+
