@@ -1,9 +1,12 @@
-import { people, history } from './data.js?v=eufy-5';
-import { setupShell, updateShell, nativeView, eventsHeader, bindEventsCalendar, getEventDay, getEventRange } from '../shell.js?v=eufy-5';
+import { productView } from '../products.js?v=eufy-6';
+import { verificationPanel, verificationView, verifiedSession, recordCameraView, demoVisits, endSession, setDemoPermissions } from '../auth.js?v=eufy-6';
+import { people, history } from './data.js?v=eufy-6';
+import { setupShell, updateShell, nativeView, eventsHeader, bindEventsCalendar, getEventDay, getEventRange } from '../shell.js?v=eufy-6';
 const app = document.querySelector('#app');
 const storageKey = 'cctv.prototype.permissions.v1';
 let permissions = {};
 try { permissions = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch { /* A blocked storage policy must not prevent using the demo. */ }
+setDemoPermissions(permissions);
 let day = 21;
 const expanded = new Set(['emma']);
 const modes = [['original','Original view'],['faces','Hide faces'],['person','Hide whole person'],['none','No access']];
@@ -14,10 +17,13 @@ function historyView() {
   day = getEventDay();
   document.title = 'eufy · Events · Access History';
   const [from,to]=getEventRange();
-  const entries = Object.entries(history[day] || {}).map(([id,events])=>[id,events.filter(event=>event.time>=from&&event.time<=to)]).filter(([,events])=>events.length);
+  const daily=Object.fromEntries(Object.entries(history[day]||{}).map(([id,events])=>[id,events.slice()]));
+  for(const visit of demoVisits(day)){(daily[visit.viewer]||=[]).push(visit.event);}
+  Object.values(daily).forEach(events=>events.sort((a,b)=>b.time.localeCompare(a.time)));
+  const entries = Object.entries(daily).map(([id,events])=>[id,events.filter(event=>event.time>=from&&event.time<=to)]).filter(([,events])=>events.length);
   const visits = entries.reduce((sum,[,events])=>sum+events.length,0);
   const weekday = new Date(2026,9,day).toLocaleDateString('en-US',{weekday:'short'});
-  app.innerHTML = `${eventsHeader('history')}<section class="access-content"><header><div class="heading"><h1 tabindex="-1">Access History</h1><span class="badge">Demo data</span></div><p class="subtitle">See who viewed your cameras and recordings</p></header><p class="hint">${icon('info')} Dates show access, not when video was recorded.${from!=='00:00'||to!=='23:59'?` · ${from}–${to}`:''}</p><section aria-label="Visits for selected date"><div class="summary"><strong>${day===21?'Today · ':''}${weekday}, Oct ${day}</strong><span class="muted">${entries.length} ${entries.length===1?'person':'people'}, ${visits} ${visits===1?'visit':'visits'}</span></div>${entries.length?entries.map(([id,events])=>personCard(id,events)).join(''):'<div class="empty">No camera access on this day.<br><br>Choose another date or time range to see visits.</div>'}</section><footer class="footer">${icon('lock')} Only you can see this access history.</footer></section>`;
+  app.innerHTML = `${eventsHeader('history')}<section class="access-content"><header><div class="heading"><h1 tabindex="-1">Access History</h1><span class="badge">Demo data</span></div><p class="subtitle">See who viewed your cameras and recordings</p></header><p class="hint">${icon('info')} Dates show access, not when video was recorded.${from!=='00:00'||to!=='23:59'?` · ${from}–${to}`:''}</p>${verificationPanel(day,from,to)}<section aria-label="Visits for selected date"><div class="summary"><strong>${day===21?'Today · ':''}${weekday}, Oct ${day}</strong><span class="muted">${entries.length} ${entries.length===1?'person':'people'}, ${visits} ${visits===1?'visit':'visits'}</span></div>${entries.length?entries.map(([id,events])=>personCard(id,events)).join(''):'<div class="empty">No camera access on this day.<br><br>Choose another date or time range to see visits.</div>'}</section><footer class="footer">${icon('lock')} Only you can see this access history.</footer></section>`;
   bindEventsCalendar(historyView);
   app.querySelectorAll('[data-expand]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.expand; expanded.has(id)?expanded.delete(id):expanded.add(id); historyView(); app.querySelector(`[data-expand="${id}"]`).focus();}));
 }
@@ -31,7 +37,7 @@ function personCard(id,events) {
   const count = `${events.length} ${events.length===1?'visit':'visits'}`;
   if(id==='alex')return `<article class="card owner"><div class="person-row">${identity(id)}<span class="visits">${count}<small>${day===21?'today':`Oct ${day}`}</small></span></div></article>`;
   const open = expanded.has(id);
-  return `<article class="card"><button class="expand" data-expand="${id}" aria-expanded="${open}" aria-controls="events-${id}" aria-label="${people[id].name}, ${count}, ${open?'collapse':'expand'} visits">${identity(id)}<span class="visits">${count}</span><span class="chevron" aria-hidden="true">${open?'⌃':'⌄'}</span></button>${currentAccess(id)}<p class="last">Last accessed ${events[0].time} · ${events[0].camera}</p><div id="events-${id}" ${open?'':'hidden'} class="events">${events.map(event=>`<div class="event"><span class="event-icon">${icon(event.type==='live'?'camera':'recording')}</span><div>${event.time}&nbsp; Viewed ${event.type==='live'?'live video':'recording'} <span class="visit-allowed">Allowed at visit</span><small>${event.camera}${event.recorded?` · recorded ${event.recorded}`:''}</small></div></div>`).join('')}</div><button class="permission" data-permission="${id}">${icon('settings')}&nbsp; Viewing permissions<span class="sr-only"> for ${people[id].name}</span></button></article>`;
+  return `<article class="card"><button class="expand" data-expand="${id}" aria-expanded="${open}" aria-controls="events-${id}" aria-label="${people[id].name}, ${count}, ${open?'collapse':'expand'} visits">${identity(id)}<span class="visits">${count}</span><span class="chevron" aria-hidden="true">${open?'⌃':'⌄'}</span></button>${currentAccess(id)}<p class="last">Last accessed ${events[0].time} · ${events[0].camera}</p><div id="events-${id}" ${open?'':'hidden'} class="events">${events.map(event=>`<div class="event"><span class="event-icon">${icon(event.type==='live'?'camera':'recording')}</span><div>${event.time}&nbsp; Viewed ${event.type==='live'?'live video':'recording'} <span class="visit-allowed">Allowed at visit</span><span class="face-visit-badge">${event.faceVerified?'Face verified · Demo':'Face verification not recorded'}</span><small>${event.camera}${event.recorded?` · recorded ${event.recorded}`:''}</small></div></div>`).join('')}</div><button class="permission" data-permission="${id}">${icon('settings')}&nbsp; Viewing permissions<span class="sr-only"> for ${people[id].name}</span></button></article>`;
 }
 function scene(id,mode) {
   return `<div class="scene"><span class="scene-tag">${people[id].name}’s view</span><svg viewBox="0 0 350 216" role="img" aria-label="Illustration of ${people[id].camera}, ${modes.find(m=>m[0]===mode)[1].toLowerCase()}"><rect width="350" height="216" fill="#e6effb"/><path d="M0 145h350v71H0z" fill="#d7e3f3"/><path d="M0 146h350" stroke="#c4d4e9" stroke-width="3"/><rect x="24" y="44" width="82" height="65" rx="5" fill="#fafaf5"/><path d="M30 50h70v53H30z" fill="#d4e4f5"/><path d="M65 48v57m-37-29h74" stroke="#fafaf5" stroke-width="4"/><rect x="26" y="119" width="117" height="44" rx="14" fill="#bacce6"/><rect x="23" y="136" width="123" height="27" rx="9" fill="#d6e2f3"/><rect x="20" y="137" width="17" height="29" rx="6" fill="#a9c0e1"/><rect x="132" y="137" width="17" height="29" rx="6" fill="#a9c0e1"/><path d="M28 164v8m111-8v8" stroke="#35484a" stroke-width="5"/><ellipse cx="228" cy="174" rx="55" ry="9" fill="#c2d2e6"/><path d="M302 148v-31" stroke="#839fbc" stroke-width="4"/><rect x="290" y="146" width="27" height="27" rx="8" fill="#b2c4d9"/><ellipse cx="305" cy="123" rx="10" ry="18" fill="#96b4c9"/><ellipse cx="298" cy="111" rx="8" ry="16" transform="rotate(-25 298 111)" fill="#b3c9d9"/>${mode==='person'?'<rect x="191" y="55" width="78" height="126" rx="19" fill="#c4e4ef" stroke="#5799b4" stroke-dasharray="4 4"/><path d="m222 107 8-4 8 4v9q-8 12-16 0z" fill="none" stroke="#5799b4"/><path d="m226 112 3 3 5-6M211 140h32m-27 9h21" stroke="#8fb6cb" stroke-width="3" stroke-linecap="round"/>':`<g><path d="M217 144v30m21-30v30" stroke="#33444b" stroke-width="12"/><path d="M210 174h14m8 0h14" stroke="#33444b" stroke-width="6" stroke-linecap="round"/><rect x="207" y="101" width="41" height="49" rx="11" fill="#7da9c9"/><path d="m208 109-6 28m45-28 7 27" stroke="#7da9c9" stroke-width="12" stroke-linecap="round"/><circle cx="228" cy="80" r="17" fill="#d4bb9f"/><path d="M212 71q5-17 28-6l4 7" fill="#34464b"/>${mode==='faces'?'<rect x="211" y="68" width="34" height="29" rx="7" fill="#b5d9ec"/><path d="M215 72h8v8h-8zm17 0h8v8h-8zm-9 8h9v8h-9zm-8 8h8v6h-8zm17 0h8v6h-8z" fill="#d8ebf7"/>':'<circle cx="223" cy="79" r="1.3" fill="#34464b"/><circle cx="234" cy="79" r="1.3" fill="#34464b"/><path d="M224 87q5 4 9 0" fill="none" stroke="#977c62"/>'}</g>`}</svg>${mode==='none'?'<div class="scene-blocked"><span aria-hidden="true">⊘</span><strong>No camera access</strong><small>This camera is hidden from this member.</small></div>':''}<span class="scene-caption">Illustration · not real footage</span></div>`;
@@ -46,6 +52,7 @@ function permissionView(id) {
   document.querySelector('#back').addEventListener('click',()=>{location.hash='events/access';});
   app.querySelectorAll('input').forEach(input=>input.addEventListener('change',()=>{
     permissions[id]=input.value;
+    setDemoPermissions(permissions);
     let persisted=true;
     try{localStorage.setItem(storageKey,JSON.stringify(permissions));}catch{persisted=false;}
     document.querySelector('#preview').innerHTML=scene(id,input.value);
@@ -56,7 +63,22 @@ function permissionView(id) {
 }
 let noticeTimer;
 function announce(message){const notice=document.querySelector('#notice');notice.textContent=message;notice.classList.add('visible');clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>notice.classList.remove('visible'),2200);}
-function route(){const path=location.hash.slice(1)||'home';updateShell(path);const match=path.match(/^(?:history|events)\/permissions\/(emma|james)$/);if(match)permissionView(match[1]);else if(path==='history'||path==='events/access')historyView();else nativeView(path.startsWith('device/')||['home','events','services','smart','shop','messages','notifications'].includes(path)?path:'home',app);window.scrollTo(0,0);}
+function route(){
+ const path=location.hash.slice(1)||'home';updateShell(path);
+ const match=path.match(/^(?:history|events)\/permissions\/(emma|james)$/);
+ if(match)permissionView(match[1]);
+ else if(path.startsWith('verify/'))verificationView(app,path.split('/')[1]);
+ else if(path.startsWith('product/'))productView(app,path.split('/')[1]);
+ else if(path==='history'||path==='events/access')historyView();
+ else if(path.startsWith('device/')){
+  const camera=path.split('/')[1];const session=verifiedSession(camera);
+  if(!session){location.replace(`#verify/${camera}`);return;}
+  recordCameraView(camera);nativeView(path,app);
+  app.querySelector('.camera-detail').insertAdjacentHTML('afterbegin',`<div class="verified-session-banner"><span>Demo face verified · Viewing as <strong>${session.name}</strong> · ${session.modeLabel}</span><button id="end-verification">End Session</button></div>`);
+  document.querySelector('#end-verification').onclick=()=>{endSession(camera);location.hash='home';};
+ }else nativeView(['home','events','services','smart','shop','messages','notifications'].includes(path)?path:'home',app);
+ window.scrollTo(0,0);
+}
 app.addEventListener('click',event=>{const button=event.target.closest('[data-permission]');if(button)location.hash=`events/permissions/${button.dataset.permission}`;});
 window.addEventListener('hashchange',()=>{route();app.querySelector('h1')?.focus();});
 setupShell();

@@ -15,3 +15,6 @@ export const history = {
   16: { alex:[{time:'12:05',type:'live',camera:'Front Door'}] },
   15: { emma:[{time:'11:30',type:'recording',camera:'Living Room',recorded:'Thu, Oct 15 10:00–10:05'}] }
 };
+
+// Sample access records include simulated face-verification outcomes.
+for (const daily of Object.values(history)) for (const visits of Object.values(daily)) for (const visit of visits) visit.faceVerified = true;

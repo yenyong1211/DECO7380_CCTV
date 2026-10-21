@@ -16,7 +16,7 @@ Existing eufy actions outside the provided screens show an explanatory dialog. D
 
 ## Indoor camera devices
 
-Home includes two demo Indoor Cam devices: Living Room and Front Door (facing the entrance from indoors). Each device has an illustrated preview, a camera detail view, and links to Access History and the corresponding member permissions (Emma for Living Room, James for Front Door). Services shows two devices. The cameras are illustrative prototype products, not connected hardware or claims about a particular eufy model.
+Home includes two demo Indoor Cam devices: Living Room and Front Door (facing the entrance from indoors). Each device has an illustrated preview, a camera detail view, and links to Access History and the corresponding member permissions (Emma for Living Room, James for Front Door). Services shows three devices after adding the Omni C28. The Front Door camera remains a generic demo device; Living Room is now labeled Indoor Cam E30. None are connected to hardware.
 
 ## Access History interactions
 
@@ -55,3 +55,15 @@ Privacy changes dispatch `cctv:permission-change` with `{ personId, camera, mode
 ## Hosting
 
 GitHub Pages publishes `main` from the repository root. Changes committed to main trigger automatic deployment. The root `index.html` redirects to `prototype/`.
+
+## Selected products and viewer face verification
+
+The supplied products are included in Shop with product detail views: Indoor Cam E30 and eufy Omni C28 Robot Vacuum (White) and Mop with Dust Bag. The Living Room camera is labeled Indoor Cam E30; the existing Front Door demo camera is retained. Home also includes the Omni C28 as a robot vacuum, without treating it as a camera. Product prices reproduce the supplied screenshots ($199.95 and $1,229.99) and are explicitly labeled reference prices, not current offers.
+
+Product images are loaded from the official eufy Shopify CDN and require an internet connection. Sources:
+- https://www.eufy.com/au/products/indoor-cam-e30?variant=51775675367791
+- https://www.eufy.com/au/products/bundle-t211ac20-1-t29yqa20-1?variant=53205557608815
+
+`products.js` contains the reference catalog and detail views. `auth.js` implements a **simulated viewer face-verification flow**, not actual facial recognition and not recognition of people in footage. Opening a camera requires a successful demo verification and a valid permission for that camera. Direct camera links also route through verification. Verified sessions expire after five minutes, end on demand, and recheck current permissions on opening a camera. A matched identity without camera permission is denied; an unmatched face is denied. No camera, face photographs, embeddings or biometric data are used or stored.
+
+Verification audit outcomes and successful camera visits are persisted locally and displayed in Events → Access History; seed records are illustrative demo samples. Verification does not grant an otherwise denied camera permission. This is coursework interaction logic in the browser, not production authentication or a claim that either product supports biometric access control. Real verification would require explicit enrollment, a suitable identity/liveness system and server-side enforcement.
