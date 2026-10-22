@@ -1,9 +1,9 @@
-import { shouldShowPrivacyIntro, privacyView, settingsView } from '../privacy.js?v=eufy-8';
-import { verificationView, setDemoPermissions } from '../auth.js?v=eufy-8';
-import { productView } from '../products.js?v=eufy-8';
-import { initialiseStartupPermissions } from '../onboarding/permissions.js?v=eufy-8';
-import { people, history } from './data.js?v=eufy-8';
-import { setupShell, updateShell, nativeView, eventsHeader, bindEventsCalendar, getEventDay, getEventRange } from '../shell.js?v=eufy-8';
+import { shouldShowPrivacyIntro, privacyView, settingsView } from '../privacy.js?v=eufy-9';
+import { verificationView, setDemoPermissions } from '../auth.js?v=eufy-9';
+import { productView } from '../products.js?v=eufy-9';
+import { initialiseStartupPermissions } from '../onboarding/permissions.js?v=eufy-9';
+import { people, history } from './data.js?v=eufy-9';
+import { setupShell, updateShell, nativeView, eventsHeader, bindEventsCalendar, getEventDay, getEventRange } from '../shell.js?v=eufy-9';
 const app = document.querySelector('#app');
 const storageKey = 'cctv.prototype.permissions.v1';
 let permissions = {};

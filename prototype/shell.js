@@ -1,4 +1,4 @@
-import { getStartupPermissions } from './onboarding/permissions.js?v=eufy-8';
+import { getStartupPermissions } from './onboarding/permissions.js?v=eufy-9';
 const svg = (paths) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
 export const symbols = {
  Home:svg('<path d="m3 10 9-7 9 7v11h-6v-7H9v7H3z"/>'),
