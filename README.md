@@ -4,7 +4,7 @@ A DECO7380 university design prototype exploring how home CCTV users can better 
 
 Our project connects a **third-party privacy guidance platform** with **proposed improvements to the eufy experience**. Users can ask a privacy question, learn what it means, and follow a visual tutorial to the relevant setting.
 
-**[Open the prototype](https://yenyong1211.github.io/DECO7380_CCTV/)** · **[Read the full workflow](docs/WORKFLOW.md)**
+**[Open the prototype](https://yenyong1211.github.io/DECO7380_CCTV/)** · **[Open the eufy prototype](https://yenyong1211.github.io/DECO7380_CCTV/agreement/)** · **[Read the full workflow](docs/WORKFLOW.md)**
 
 ## Why we are building this
 
