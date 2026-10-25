@@ -69,7 +69,7 @@ For example, a user could review yesterday’s camera visits, find a shared view
 
 | Entry | Link |
 | --- | --- |
-| Full published entry — currently opens the agreement | [Open prototype](https://yenyong1211.github.io/DECO7380_CCTV/) |
+| Third-party privacy platform | [Open prototype](https://yenyong1211.github.io/DECO7380_CCTV/) |
 | eufy agreement and welcome | [Open agreement](https://yenyong1211.github.io/DECO7380_CCTV/agreement/) |
 | eufy Home | [Open ANN’s Home](https://yenyong1211.github.io/DECO7380_CCTV/prototype/#home) |
 | Privacy guide | [Explore privacy](https://yenyong1211.github.io/DECO7380_CCTV/prototype/#privacy) |
@@ -82,11 +82,11 @@ The browser may show the optional privacy introduction on the first Home visit. 
 
 The repository contains work across the published `main` branch and feature branches. All of these modules form part of the project.
 
-- **Published on main:** the animated agreement, demo welcome entry, eufy interface, privacy guide, access-history and viewing-permission interactions, and viewer-verification demo.
-- **Search feature branch:** the third-party search page, structured answers, privacy profile, data-flow visualisations, evidence explanations and links to eufy destinations. Search currently uses a curated English question library.
+- **Integrated on main:** the third-party privacy platform, animated agreement, demo welcome entry, eufy interface, privacy guide, access-history and viewing-permission interactions, and viewer-verification demo.
+- **Third-party privacy platform:** Smart Search, structured answers, privacy profile, interactive visual exposure factors, people/visibility explanations, branching data flow, evidence disclosures and a demo access timeline. Search uses a curated English question library. Controls and review actions open existing eufy routes; the general eufy entry opens the agreement.
 - **Tutorial design to implement:** page-by-page instructions with target boxes and arrows, shared navigation, and clear completion/handoff states. This is the core interaction described in the workflow; it is not yet provided by the existing search-answer interface.
 
-The current published root opens the agreement. The third-party search entry has not yet been merged into main. See [WORKFLOW.md](docs/WORKFLOW.md) for complete flows, the first tutorial specification, and integration priorities.
+The root opens the third-party privacy platform. The eufy agreement remains available at `agreement/`, and action links retain the existing `prototype/#…` routes. See [WORKFLOW.md](docs/WORKFLOW.md) for complete flows, the first tutorial specification, and integration priorities.
 
 ## Demo scope
 
@@ -104,18 +104,22 @@ Serve the repository through HTTP so JavaScript modules load correctly:
 python3 -m http.server 7380
 ```
 
-Open `http://localhost:7380/` for the entry page, or `http://localhost:7380/prototype/` for the eufy-facing interface. On the search feature branch, the root opens the third-party platform. No build step or API key is required.
+Open `http://localhost:7380/` for the entry page, or `http://localhost:7380/prototype/` for the eufy-facing interface. The root opens the third-party platform; the general eufy entry opens `agreement/`. No build step or API key is required.
 
 ## Repository guide
 
 | Path | Contents |
 | --- | --- |
-| `index.html` | Entry page; its destination depends on the branch |
+| `index.html` | Third-party privacy platform entry |
 | `agreement/` | Animated agreement, welcome page and SVG illustrations |
 | `prototype/` | eufy-facing interface, privacy content, cameras and verification |
 | `prototype/history/` | Access History, sample visits and viewing-permission controls |
-| `privacy/` *(search feature branch)* | Third-party search, privacy profile, knowledge library and visualisations |
-| `tests/` *(search feature branch)* | Search and destination checks |
+| `privacy/` | Third-party search, privacy profile, knowledge library and visualisations |
+| `tests/` | Search and destination checks |
 | `docs/WORKFLOW.md` | Shared workflow, tutorial specifications and integration notes |
 
 Start with [the workflow](docs/WORKFLOW.md) for the complete project journey, or [the eufy prototype notes](prototype/README.md) for module details.
+
+## Validation
+
+Run all routing/content and agreement checks with Node 22+: `node --test tests/*.test.mjs`. Search deep links preserve local hosting and the `/DECO7380_CCTV/` GitHub Pages prefix. The example Exposure 5/10 and User Control 8/10 scores remain fixed researcher-coded illustrations, with evidence and limitations available on demand. Original vector illustrations are in `privacy/visuals.js`.
