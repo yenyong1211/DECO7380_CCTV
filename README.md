@@ -1,70 +1,125 @@
-# DECO7380 CCTV Privacy Platform
+# CCTV Privacy — Understand, Find, and Control
 
-Independent third-party **Smart Privacy Search / Agent**, connected to the group's existing eufy prototype. The root website is the entry experience; `prototype/` and all its current routes are preserved unchanged.
+A DECO7380 university design prototype exploring how home CCTV users can better understand their camera data and find the controls they need.
 
-## Open
+Our project connects a **third-party privacy guidance platform** with **proposed improvements to the eufy experience**. Users can ask a privacy question, learn what it means, and follow a visual tutorial to the relevant setting.
 
-From this repository root:
+**[Open the prototype](https://yenyong1211.github.io/DECO7380_CCTV/)** · **[Read the full workflow](docs/WORKFLOW.md)**
+
+## Why we are building this
+
+Home cameras can make it difficult to understand where recordings go, who can view them, and what changes when a recording is shared or a permission is removed. Even when a privacy control exists, users may not know where to find it.
+
+We aim to connect privacy information with practical guidance: help people understand their options, locate the right control, and make their own choices.
+
+## Two connected parts
+
+### 1. Third-party privacy guidance platform
+
+The third-party platform is where users ask questions and explore their CCTV privacy profile. Its core design is a **step-by-step tutorial**, rather than an answer that leaves the user to find a setting alone.
+
+For example, a user asks **“Where are my privacy settings?”**. The tutorial shows one interface page at a time, highlights the relevant control with a box and arrow, and guides them through:
+
+**ANN’s Home → Menu → Settings → Privacy**
+
+Tutorials use short instructions, Previous / Next navigation, and a completion summary. Users can replay the guidance, ask another question, or explicitly open the corresponding eufy page.
+
+The platform also includes:
+
+- **Smart Privacy Search:** questions about access, storage, sharing, permissions and privacy information.
+- **Privacy Profile:** an overview of the example device and its privacy-related features.
+- **My Data Flow:** visual explanations of local storage, optional cloud paths and exported copies.
+- **Exposure, User Control and Evidence:** explanations of illustrative research scores and the assumptions behind them.
+- **Access review:** an activity overview that connects users to detailed records and controls.
+
+### 2. Proposed improvements to the eufy experience
+
+The eufy-facing prototype retains the familiar interface context and adds explanations and controls around privacy and camera access. **The welcome/login page belongs to this eufy-facing part.**
+
+| Area | What users can explore |
+| --- | --- |
+| **Privacy Agreement** | An animated explanation of data collection, storage, access and deletion before demo entry |
+| **Welcome / demo login** | Entry to the prototype without a real account |
+| **ANN’s Home** | Living Room and Front Door camera previews |
+| **Privacy guide** | Your data journey; People & access; Keep, share or delete |
+| **Privacy settings & policies** | Official document links, app-permission explanations and data rights |
+| **Access History** | Who viewed a camera or recording, with date/time selection and expandable visits |
+| **Viewing Permissions** | Original view, Hide faces, Hide whole person, or No access for a demonstrated shared viewer |
+| **Viewer verification** | A simulated face-match and camera-permission decision for the person requesting access |
+| **Supporting screens** | Camera Events, Services, Smart, Shop, Messages and Notifications |
+
+This is a student proposal for improving the eufy experience. It is not an official eufy product or an established commercial partnership.
+
+## The intended user journey
+
+```mermaid
+flowchart LR
+  Q["Ask a privacy question"] --> U["Understand the explanation"]
+  U --> T["Follow the visual tutorial<br/>One highlighted step at a time"]
+  T --> E["Open the relevant eufy control"]
+  E --> C["Review options and choose"]
+  C --> R["Review access or return for guidance"]
+```
+
+The third-party platform **explains and guides**. The eufy-facing screens are where the user reviews or changes the demonstrated setting. Finishing a tutorial does not automatically change permissions or accept an agreement.
+
+For example, a user could review yesterday’s camera visits, find a shared viewer’s permissions, choose No access, and understand that this affects future viewing without deleting past visits or previously downloaded files.
+
+## Try the current prototype
+
+| Entry | Link |
+| --- | --- |
+| Third-party privacy platform | [Open prototype](https://yenyong1211.github.io/DECO7380_CCTV/) |
+| eufy agreement and welcome | [Open agreement](https://yenyong1211.github.io/DECO7380_CCTV/agreement/) |
+| eufy Home | [Open ANN’s Home](https://yenyong1211.github.io/DECO7380_CCTV/prototype/#home) |
+| Privacy guide | [Explore privacy](https://yenyong1211.github.io/DECO7380_CCTV/prototype/#privacy) |
+| Access History | [Review access](https://yenyong1211.github.io/DECO7380_CCTV/prototype/#events/access) |
+| Third-party search implementation | [View the search feature branch](https://github.com/yenyong1211/DECO7380_CCTV/tree/feat/privacy-search-entry) |
+
+The browser may show the optional privacy introduction on the first Home visit. It can be skipped and reopened through **Menu → Settings → Privacy**.
+
+## What is implemented, and what comes next?
+
+The repository contains work across the published `main` branch and feature branches. All of these modules form part of the project.
+
+- **Integrated on main:** the third-party privacy platform, animated agreement, demo welcome entry, eufy interface, privacy guide, access-history and viewing-permission interactions, and viewer-verification demo.
+- **Third-party privacy platform:** Smart Search, structured answers, privacy profile, interactive visual exposure factors, people/visibility explanations, branching data flow, evidence disclosures and a demo access timeline. Search uses a curated English question library. Controls and review actions open existing eufy routes; the general eufy entry opens the agreement.
+- **Tutorial design to implement:** page-by-page instructions with target boxes and arrows, shared navigation, and clear completion/handoff states. This is the core interaction described in the workflow; it is not yet provided by the existing search-answer interface.
+
+The root opens the third-party privacy platform. The eufy agreement remains available at `agreement/`, and action links retain the existing `prototype/#…` routes. See [WORKFLOW.md](docs/WORKFLOW.md) for complete flows, the first tutorial specification, and integration priorities.
+
+## Demo scope
+
+Camera images, identities and activity are examples. The project does not connect to real cameras, authenticate a real eufy account, or collect face biometrics. The verification interaction is a simulation; current direct camera links can still open illustrated previews without it.
+
+Viewing-permission changes are stored in the current browser. Past access records remain separate from current permissions. Example exposure/control scores are fixed research illustrations, not live security measurements or official certifications. Downloading, deleting real recordings and changing real cloud subscriptions are outside this prototype.
+
+The sample access-history reference date is **21 October 2026**; “yesterday” in the example search content means **20 October 2026**.
+
+## Run locally
+
+Serve the repository through HTTP so JavaScript modules load correctly:
 
 ```sh
 python3 -m http.server 7380
 ```
 
-Third-party platform: http://localhost:7380/  
-Existing eufy prototype: http://localhost:7380/prototype/
+Open `http://localhost:7380/` for the entry page, or `http://localhost:7380/prototype/` for the eufy-facing interface. The root opens the third-party platform; the general eufy entry opens `agreement/`. No build step or API key is required.
 
-GitHub Pages uses the same relative paths under `/DECO7380_CCTV/`. The root entry becomes the privacy platform after these changes are merged into the Pages publishing branch. There is no build step and no API key. ES modules require HTTP hosting.
+## Repository guide
 
-## Platform structure
-
-Restores the earlier conversation's gray/white card layout, green accents, sidebar search and navigation, clickable **00 ASK → 01 SEE → 02 UNDERSTAND → 03 CONTROL → 04 REVIEW** journey, Privacy Profile, two score cards, factor explanations, Evidence and interactive Data Flow. The selected profile uses the group's Living Room Indoor Cam E30 rather than presenting an unrelated S3 Pro as a connected device.
-
-The sidebar distinguishes third-party information from **Continue in eufy** actions. Search interprets curated English questions and shows structured information, relevant local detail panels and explicit links to real group-prototype routes. It is deterministic navigation, not a live LLM or arbitrary product advice service. Unknown questions receive a bounded fallback. Reading or searching never changes settings.
-
-| Question | Information / destination |
+| Path | Contents |
 | --- | --- |
-| Who can see my camera? | Current-permission explanation; Access History; Emma and James permissions |
-| Who accessed my camera yesterday? | Seed visits for 20 Oct 2026; Access History with date-selection instruction |
-| How do I stop Emma seeing my camera? | `prototype/#events/permissions/emma` |
-| How do I change James permission? | `prototype/#events/permissions/james` |
-| Where are my videos stored? | Data Flow and storage explanation; both camera routes and Services |
-| Why is Data Access Exposure 5/10? | Five original example factors and evidence limitations |
-| Show my living room / front door camera | `prototype/#device/living-room` / `#device/front-door` |
-| Open Services / messages / Notification settings | `#services` / `#messages` / `#notifications` |
+| `index.html` | Third-party privacy platform entry |
+| `agreement/` | Animated agreement, welcome page and SVG illustrations |
+| `prototype/` | eufy-facing interface, privacy content, cameras and verification |
+| `prototype/history/` | Access History, sample visits and viewing-permission controls |
+| `privacy/` | Third-party search, privacy profile, knowledge library and visualisations |
+| `tests/` | Search and destination checks |
+| `docs/WORKFLOW.md` | Shared workflow, tutorial specifications and integration notes |
 
-Search questions and selected profile views are stored in the current URL for browser Back/Forward and reload restoration. Search text is not sent to an AI or analytics service. The platform uses no new localStorage keys; existing eufy controls own their demo state. Links open in the same tab; browser Back returns to the platform.
+Start with [the workflow](docs/WORKFLOW.md) for the complete project journey, or [the eufy prototype notes](prototype/README.md) for module details.
 
-## Ratings and evidence
+## Validation
 
-**Researcher-coded prototype examples, not official certification, a security audit or live account measurements.** The five Exposure factors from the previous design are Support access, Other-user access, Cloud recording, External processing, and Secondary video use, each illustrated as 1/2, total 5/10. Unknown/conditional exposure does not establish harmful data use. User Control uses a separately disclosed illustrative rubric totaling 8/10. Both stay fixed when permissions change.
-
-The evidence panel distinguishes observed prototype functions, illustrative assumptions and unverified real-product/account status. These codes need research-team review and product evidence before formal study use. No claim of actual manufacturer video access, encryption, processing location, cloud subscription or secondary video use is inferred. All video previews, people and visits are simulated.
-
-The eufy demo's reference today is **21 October 2026**, so yesterday means **20 October**, not the user's wall clock. Access History opens on its existing default date: users must choose 20 October or press Previous day. Date filtering is not silently added to the existing router. Camera routes retain the group's simulated verification behavior.
-
-## Verification
-
-Run the meaningful routing/content tests with Node 22+:
-
-```sh
-node --test tests/search.test.mjs
-```
-
-Manual exhibit checks:
-
-1. Search the examples above and inspect both answers and destinations.
-2. Follow Continue in eufy into Access History and both member permissions; return using Back and verify the question remains.
-3. Check both camera routes (including the original verification behavior), Services, Messages and Notifications.
-4. Click journey stages, score cards, evidence links and Data Flow nodes. Repeat on mobile.
-5. Serve from the repository root and from a parent directory under `/DECO7380_CCTV/`; links must retain the repository prefix.
-6. On GitHub Pages after merge, open the root platform and its linked `prototype/#…` destinations. URL resolution tests cover the production prefix, but they do not prove deployment of unmerged code.
-
-Implementation: `index.html`, `privacy/style.css`, `privacy/app.js`, `privacy/knowledge.js`. Existing simulated people and visits are read from `prototype/history/data.js`, not duplicated. See [the group's original prototype documentation](prototype/README.md).
-
-## Latest eufy entry integration
-
-Synced with main commit ff3a0e9 (animated pre-login Privacy Agreement). The general eufy entry opens agreement/; targeted action/review searches retain existing prototype hash routes. Agreement/consent questions link to the new explanation. Agreement source is preserved unchanged from the group commit. No agreement is automatically accepted.
-
-## Visual privacy interface
-
-Exposure uses five interactive vector scenes, a 5/10 ring and one selected-factor explanation. Controls show people and four visibility illustrations; Data Flow uses a branching local/optional-cloud/copy map; Review uses a seeded visit timeline. Evidence and extended search explanations are collapsed by default. The diagrams explain the demo without reproducing eufy controls. All settings/actions still open the existing eufy prototype. Original SVG illustrations are implemented in privacy/visuals.js.
+Run all routing/content and agreement checks with Node 22+: `node --test tests/*.test.mjs`. Search deep links preserve local hosting and the `/DECO7380_CCTV/` GitHub Pages prefix. The example Exposure 5/10 and User Control 8/10 scores remain fixed researcher-coded illustrations, with evidence and limitations available on demand. Original vector illustrations are in `privacy/visuals.js`.
