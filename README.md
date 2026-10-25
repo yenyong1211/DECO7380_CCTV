@@ -60,3 +60,7 @@ Manual exhibit checks:
 6. On GitHub Pages after merge, open the root platform and its linked `prototype/#…` destinations. URL resolution tests cover the production prefix, but they do not prove deployment of unmerged code.
 
 Implementation: `index.html`, `privacy/style.css`, `privacy/app.js`, `privacy/knowledge.js`. Existing simulated people and visits are read from `prototype/history/data.js`, not duplicated. See [the group's original prototype documentation](prototype/README.md).
+
+## Latest eufy entry integration
+
+Synced with main commit ff3a0e9 (animated pre-login Privacy Agreement). The general eufy entry opens agreement/; targeted action/review searches retain existing prototype hash routes. Agreement/consent questions link to the new explanation. Agreement source is preserved unchanged from the group commit. No agreement is automatically accepted.

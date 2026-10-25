@@ -1,10 +1,11 @@
 import {history, people} from '../prototype/history/data.js';
 
 // Deliberately bounded exhibit content; no inferred real-account status or external AI.
-export const routes = ['events/access','events/permissions/emma','events/permissions/james','device/living-room','device/front-door','services','messages','notifications'];
+export const routes = ['events/access','events/permissions/emma','events/permissions/james','device/living-room','device/front-door','services','messages','notifications','agreement'];
 export function eufyURL(route, base) {
   if (!routes.includes(route)) throw new Error('Unsupported eufy route');
-  const url = new URL('prototype/', base); url.hash = route; return url.href;
+  const url = new URL('prototype/', base); if (route === 'agreement') return new URL('../agreement/', url).href;
+  url.hash = route; return url.href;
 }
 const action = (route, label, help) => ({route,label,help});
 const access = action('events/access','Access History','Review simulated visits. Use the calendar to select a date.');
@@ -35,9 +36,11 @@ topics.services={stage:'CONTROL',title:'Explore services in the connected eufy p
 topics.support={stage:'UNDERSTAND',title:'Can eufy support see my videos?',summary:'This platform cannot verify support access to a real camera or account. The researcher-coded support-access factor is a scenario example, not evidence of actual access.',facts:[['Separate people from support','Emma and James are simulated shared users, not eufy support staff. Their activity cannot establish what a manufacturer can access.'],['What to verify','Check the applicable product documentation, privacy notice and any support permission request. The existing eufy privacy guide links official material.']],actions:[]};
 topics.security={stage:'UNDERSTAND',title:'Encryption needs product-specific evidence.',summary:'This prototype does not inspect network traffic, encryption keys or real video storage. It cannot certify that your recordings are encrypted or that a product is secure.',facts:[['Evidence needed','Check the exact device, firmware, storage path and service documentation. The 5/10 score is not an encryption test.']],actions:[]};
 topics.profile={stage:'SEE',title:'Your connected CCTV privacy profile.',summary:'The profile brings together exposure, user control, data flow and evidence for the exhibit scenario. The linked group prototype contains a Living Room Indoor Cam E30 and a Front Door demo camera.',facts:[['Information versus action','Explore the profile on this platform. Use Continue in eufy to review visits, change viewing permissions or open a demo camera.']],actions:[access,action('device/living-room','Living Room camera','Opens the existing demo verification and camera flow.')]};
+topics.agreement={stage:'UNDERSTAND',title:'Review the new eufy Privacy Agreement.',summary:'The connected eufy demo now starts with an animated privacy explanation before login. It explains collection, storage, sharing and deletion.',facts:[['What you can explore','Follow the animated data journey, pause motion, expand explanations and explore the optional cloud choice. These are demo choices, not real account settings or legal consent.']],actions:[action('agreement','Privacy Agreement','Open the new pre-login privacy explanation in eufy.')]};
 export function search(question) {
   const q = question.toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9\s/-]/g,' ').replace(/\s+/g,' ').trim();
   if (!q) return null;
+  if (/\b(agreement|consent|privacy policy|before login|pre login)\b/.test(q)) return {...topics.agreement};
   if (/\b(support|manufacturer)\b/.test(q)) return {...topics.support};
   if (/\b(encryption|encrypted|secure)\b/.test(q)) return {...topics.security};
   if (/\b(service|services)\b/.test(q)) return {...topics.services};
