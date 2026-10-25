@@ -64,3 +64,7 @@ Implementation: `index.html`, `privacy/style.css`, `privacy/app.js`, `privacy/kn
 ## Latest eufy entry integration
 
 Synced with main commit ff3a0e9 (animated pre-login Privacy Agreement). The general eufy entry opens agreement/; targeted action/review searches retain existing prototype hash routes. Agreement/consent questions link to the new explanation. Agreement source is preserved unchanged from the group commit. No agreement is automatically accepted.
+
+## Visual privacy interface
+
+Exposure uses five interactive vector scenes, a 5/10 ring and one selected-factor explanation. Controls show people and four visibility illustrations; Data Flow uses a branching local/optional-cloud/copy map; Review uses a seeded visit timeline. Evidence and extended search explanations are collapsed by default. The diagrams explain the demo without reproducing eufy controls. All settings/actions still open the existing eufy prototype. Original SVG illustrations are implemented in privacy/visuals.js.
