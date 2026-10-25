@@ -50,7 +50,7 @@ function renderAnswer(answer){
  const links=el('div',null,'result-links');
  const view=answer.rubric?'exposure':answer.controlRubric?'controls':answer===topics.profile?'profile':answer.stage==='UNDERSTAND'?'flow':answer.stage==='CONTROL'?'controls':answer.stage==='REVIEW'?'review':'profile';
  links.append(localButton(`Explore ${viewNames[view]} →`,view),localButton('View evidence & limitations →','evidence'));result.append(links);actions(result,answer.actions);
- result.append(el('p','Third-party explanation above · eufy actions below open the existing group prototype in this tab. Use Back to return.','boundary'));
+ result.append(el('p','Continue in eufy opens the connected demo. Use Back to return.','boundary'));
  renderDetail(view);mark(answer.stage,view);
 }
 function remember(params){const url=new URL(location.href);url.search='';for(const [key,value] of Object.entries(params))url.searchParams.set(key,value);history.pushState(null,'',url);}
