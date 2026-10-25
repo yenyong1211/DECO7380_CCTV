@@ -1,0 +1,22 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+const source=readFileSync(new URL('../agreement/app.js',import.meta.url),'utf8');
+function setup(){
+ let now=0, nextTimer=0;const timers=new Map(),redirects=[];
+ const nodes={};
+ const make=()=>({checked:false,disabled:false,textContent:'',src:'journey.svg',dataset:{},clientHeight:300,scrollHeight:2000,scrollTop:0,handlers:{},classList:{items:new Set(),add(x){this.items.add(x)},remove(x){this.items.delete(x)},contains(x){return this.items.has(x)},toggle(){}},addEventListener(name,fn){this.handlers[name]=fn},setAttribute(){},focus(){},getClientRects(){return[{}]},querySelectorAll(){return[]}});
+ for(const id of ['motion','cloud','heroart','overlay','login','title','agree','consentcopy','reading-status','confirm-read','confirm-copies','toast','decline','reopen','enterhome','loginform'])nodes[id]=make();
+ const scroll=make();nodes.overlay.querySelector=()=>scroll;nodes.overlay.querySelectorAll=()=>Object.values(nodes);
+ const context={document:{getElementById:id=>nodes[id],querySelectorAll:()=>[],body:make(),activeElement:make(),addEventListener(){}},window:{addEventListener(){},location:{assign:url=>redirects.push(url)}},matchMedia:()=>({matches:false}),performance:{now:()=>now},setInterval(fn){timers.set(++nextTimer,fn);return nextTimer},clearInterval:id=>timers.delete(id),setTimeout(){},requestAnimationFrame:fn=>fn()};
+ vm.runInNewContext(source,context);
+ return{nodes,scroll,redirects,tick(ms){now+=ms;for(const fn of [...timers.values()])fn()},end(){scroll.scrollTop=1700;scroll.handlers.scroll()},check(id,value=true){nodes[id].checked=value;nodes[id].handlers.change()}};
+}
+test('10 seconds alone does not unlock the agreement',()=>{const s=setup();assert.equal(s.nodes.agree.disabled,true);s.tick(10000);assert.equal(s.nodes.agree.disabled,true);s.nodes.agree.onclick();assert.equal(s.nodes.login.inert,true)});
+test('end and confirmations still require the full countdown',()=>{const s=setup();s.end();s.check('confirm-read');s.check('confirm-copies');s.tick(9999);assert.equal(s.nodes.agree.disabled,true);s.tick(1);assert.equal(s.nodes.agree.disabled,false);assert.equal(s.nodes.cloud.checked,false)});
+test('both confirmations are required and unchecking disables again',()=>{const s=setup();s.tick(10000);s.end();s.check('confirm-read');assert.equal(s.nodes.agree.disabled,true);s.check('confirm-copies');assert.equal(s.nodes.agree.disabled,false);s.check('confirm-read',false);assert.equal(s.nodes.agree.disabled,true)});
+test('checkboxes without reaching the end do not unlock',()=>{const s=setup();s.check('confirm-read');s.check('confirm-copies');s.tick(10000);assert.equal(s.nodes.agree.disabled,true)});
+test('successful acknowledgement permits demo entry; reopening resets requirements',()=>{const s=setup();s.end();s.check('confirm-read');s.check('confirm-copies');s.tick(10000);s.nodes.agree.onclick();assert.equal(s.nodes.login.inert,false);s.nodes.enterhome.onclick();assert.deepEqual(s.redirects,['../prototype/#home']);s.nodes.reopen.onclick();assert.equal(s.scroll.scrollTop,0);assert.equal(s.nodes['confirm-read'].checked,false);assert.equal(s.nodes.agree.disabled,true);assert.match(s.nodes.agree.textContent,/10s/)});
+test('pending Home entry proceeds only after a valid acknowledgement',()=>{const s=setup();s.nodes.enterhome.onclick();s.nodes.agree.onclick();assert.deepEqual(s.redirects,[]);s.end();s.check('confirm-read');s.check('confirm-copies');s.tick(10000);s.nodes.agree.onclick();assert.deepEqual(s.redirects,['../prototype/#home'])});
+test('declining clears a pending entry',()=>{const s=setup();s.nodes.enterhome.onclick();s.nodes.decline.onclick();s.nodes.reopen.onclick();s.end();s.check('confirm-read');s.check('confirm-copies');s.tick(10000);s.nodes.agree.onclick();assert.deepEqual(s.redirects,[])});

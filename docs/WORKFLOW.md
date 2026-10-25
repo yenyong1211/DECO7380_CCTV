@@ -123,13 +123,13 @@ These sequences form the tutorial content plan. They should use verified screens
 
 ## 7. eufy agreement and welcome/login workflow
 
-The agreement is displayed as an overlay on the welcome page, before entry to Home. It belongs to the eufy-facing part of the project.
+The agreement is displayed as an overlay on the welcome page, before entry to Home. It belongs to the eufy-facing part of the project.\n\nBefore **Agree & Continue** becomes enabled, the user must (1) reach the bottom of the agreement, (2) tick both reading confirmations, and (3) wait at least 10 seconds from opening the agreement. These conditions are independent: the timer alone does not unlock the button. Reopening the agreement resets the timer and confirmations. Optional cloud recording can remain off. Scrolling to the bottom is an interface check, not proof of comprehension.
 
 ```mermaid
 flowchart TB
   Enter["Enter eufy-facing experience"] --> A["Privacy Agreement overlay<br/>on the Welcome page"]
   A --> Explore["Explore animated collection,<br/>storage, access and deletion explanations"]
-  Explore --> Choice{"Demo agreement choice"}
+  Explore --> Gate["Read to the end + tick both confirmations<br/>At least 10 seconds since opening"]\n  Gate --> Choice{"Demo agreement choice"}
   Choice -->|Disagree| Pause["Return to Welcome<br/>Home entry remains paused"]
   Pause -->|Review again| A
   Choice -->|"Agree & Continue"| Welcome["Welcome / demo login"]
