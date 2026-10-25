@@ -29,6 +29,9 @@ function readyToContinue() {
   return modalOpen && reachedEnd && remainingSeconds() === 0 && confirmations.every(input => input.checked);
 }
 function updateReadingState() {
+  const checkedCount = confirmations.filter(input => input.checked).length;
+  $('confirm-all').checked = checkedCount === confirmations.length;
+  $('confirm-all').indeterminate = checkedCount > 0 && checkedCount < confirmations.length;
   const remaining = remainingSeconds();
   const ready = readyToContinue();
   $('agree').disabled = !ready;
@@ -51,6 +54,10 @@ scrollArea.addEventListener('scroll', checkReadingEnd, {passive:true});
 window.addEventListener('resize', checkReadingEnd);
 scrollArea.querySelectorAll('img').forEach(img => img.addEventListener('load', checkReadingEnd));
 confirmations.forEach(input => input.addEventListener('change', updateReadingState));
+$('confirm-all').addEventListener('change', () => {
+  confirmations.forEach(input => { input.checked = $('confirm-all').checked; });
+  updateReadingState();
+});
 
 function openModal(review = false) {
   lastFocus = document.activeElement;

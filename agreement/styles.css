@@ -10,13 +10,46 @@
 .demo-entry{margin-top:12px!important;background:#123541!important}.demo-hint{font-size:11px!important;line-height:1.6;margin:12px 0 5px!important}.login small{font-size:10px;line-height:2.4}
 
 /* Keep the agreement UI; make the reading requirements explicit. */
-.reading-confirmations{border:1px solid #dcebf1;border-radius:10px;margin:18px 0 6px;padding:14px;background:#f6fbfd;min-width:0}
-.reading-confirmations legend{font-size:12px;font-weight:700;color:#427385;padding:0 5px}
-.reading-confirmations label{display:flex;align-items:flex-start;gap:9px;font-size:12px;color:#486e7b;line-height:1.65;margin:8px 0 14px;cursor:pointer}
-.reading-confirmations input{accent-color:#00a9c2;width:17px;height:17px;flex-shrink:0;margin:2px 0 0}
-.reading-confirmations p{font-size:11px;line-height:1.6;color:#72858f;margin:0}
 #reading-status{font-size:11px;color:#5d7b88;margin:0 0 12px}
 #agree{transition:background .2s,color .2s,box-shadow .2s}
 #agree:disabled{background:#e0e7eb;color:#8b9ca5;cursor:not-allowed;box-shadow:none}
 #agree:not(:disabled){background:#00bdd6;box-shadow:0 3px 12px #00bdd62b}
 @media(prefers-reduced-motion:reduce){#agree{transition:none}}
+
+/* Draw attention to expandable explanations without making them required. */
+.key-reading-hint{font-size:12px;line-height:1.7;margin:-10px 0 20px;color:#397589}
+.key-detail{background:#f0fbfd;border:1px solid #a9dfe7;border-left:3px solid #00a8bf;transition:background .2s,border-color .2s}
+.key-detail summary{align-items:center;gap:12px;padding:13px 12px}
+.key-summary{display:block;min-width:0}
+.key-badge{display:inline-block;font-size:9px;letter-spacing:.35px;font-weight:700;color:#006d80;background:#d3f1f5;border-radius:4px;padding:3px 6px;margin-bottom:6px}
+.key-summary strong{display:block;font-size:12px;line-height:1.5;color:#205c6c}
+.key-summary small{display:block;color:#4f7480;font-size:11px;line-height:1.6;margin-top:5px}
+.key-tap{display:inline-block;color:#007b91;font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.key-detail summary:after{font-size:22px;line-height:1;flex-shrink:0}
+.key-detail summary:hover{background:#e5f6fa}
+.key-detail[open]{background:#f7fcfd}
+.key-detail[open] .key-tap{display:none}
+.key-detail p{color:#486975}
+.key-detail p strong{color:#205c6c}
+.key-detail-caution{background:#fff9ef;border-color:#ecd3a4;border-left-color:#c38b31}
+.key-detail-caution .key-badge{color:#805616;background:#f8e9c8}
+.key-detail-caution .key-summary strong,.key-detail-caution p strong{color:#79561e}
+.key-detail-caution .key-summary small,.key-detail-caution p{color:#826a43}
+.key-detail-caution .key-tap,.key-detail-caution summary:after{color:#916016}
+.key-detail-caution summary:hover{background:#fff2da}
+.key-detail-caution[open]{background:#fffaf2}
+.key-inline{font-weight:600;color:#246c7c;background:#e7f6f9;border-radius:3px;padding:1px 2px}
+.key-inline-caution{color:#826027;background:#fff2d9}
+@media(prefers-reduced-motion:reduce){.key-detail{transition:none}}
+
+/* Reading confirmations, including a shortcut for these two items only. */
+ make the reading requirements explicit. */
+.reading-confirmations{border:1px solid #dcebf1;border-radius:10px;margin:18px 0 6px;padding:14px;background:#f6fbfd;min-width:0}
+.reading-confirmations legend{font-size:12px;font-weight:700;color:#427385;padding:0 5px}
+.reading-confirmations label{display:flex;align-items:flex-start;gap:9px;font-size:12px;color:#486e7b;line-height:1.65;margin:8px 0 14px;cursor:pointer}
+.reading-confirmations input{accent-color:#00a9c2;width:17px;height:17px;flex-shrink:0;margin:2px 0 0}
+.reading-confirmations p{font-size:11px;line-height:1.6;color:#72858f;margin:0}
+
+.reading-confirmations .select-all-confirmations{padding-bottom:12px;border-bottom:1px solid #dcebf1;margin-top:3px}
+.select-all-confirmations strong{font-size:12px;color:#246c7c}
+.select-all-confirmations small{display:block;font-size:10px;color:#72858f;margin-top:2px;font-weight:400}
