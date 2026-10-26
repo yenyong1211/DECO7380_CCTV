@@ -1,3 +1,4 @@
+import { smartView, smartAlertsContent, installSmart } from './smart.js?v=smart-controls-1';
 import { storageView } from './storage.js?v=storage-switches-1';
 // Local interactive study data only; no connected device, cloud or real approval service.
 export const requests=[
@@ -63,6 +64,7 @@ function tabs(active){return `<nav class="native-tabs"><a href="#services" ${act
 const intro='<p class="fx-note">Interactive prototype · Device values and storage settings are simulated, not readings from connected products.</p>';
 function health(d){return `<article class="fx-card"><div class="fx-row"><h3>${d.name}</h3><span class="badge">Online · Demo</span></div><p>${d.place} · Battery ${d.battery}% · Wi-Fi good</p><progress max="100" value="${d.battery}" aria-label="Demo battery ${d.battery}%"></progress><p>Last sync: 2 minutes ago (demo)</p><p>${d.extra}</p><p>Storage: ${d.storage}</p><a class="eufy-secondary" href="#services/device/${d.id}">Device services</a></article>`;}
 export function featureView(app,path){
+ if(path==='smart'){smartView(app);return true;}
  if(path==='services'){
  app.className='native-page native-services';app.innerHTML=tabs('insights')+'<h1>Space Status</h1><p class="space-status">2 Spaces | 3 Devices</p>'+intro+`<div class="service-grid"><section><h2>Your devices</h2>${devices.map(d=>`<article class="fx-card"><h3>${d.name}</h3><p>${d.type} · ${d.place}</p><a href="#product/${d.id}">View Product →</a></article>`).join('')}</section><section><h2>Device Health</h2>${devices.map(health).join('')}</section></div>`;return true;
  }
@@ -78,6 +80,7 @@ export function featureView(app,path){
  return false;
 }
 export function installFeatures(){
+ installSmart();
  document.addEventListener('click',e=>{
  const clip=e.target.closest('[data-clip]');if(clip){modal(clip.dataset.clip);return;}
  const b=e.target.closest('[data-original]');if(b&&['Cloud Backup','Services'].includes(b.dataset.original)){
@@ -85,4 +88,4 @@ export function installFeatures(){
  }
  },true);
 }
-export function notificationExtras(app){app.insertAdjacentHTML('beforeend',`<section class="fx-section"><h2>Your security notifications</h2><p>Preview a face-masked clip before approving a request.</p>${requests.map(card).join('')}</section>`);}
+export function notificationExtras(app){app.insertAdjacentHTML('beforeend',smartAlertsContent()+`<section class="fx-section"><h2>Your security notifications</h2><p>Preview a face-masked clip before approving a request.</p>${requests.map(card).join('')}</section>`);}

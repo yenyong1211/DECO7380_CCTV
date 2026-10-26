@@ -1,0 +1,7 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+let stored=null;globalThis.localStorage={getItem:()=>stored,setItem:(key,value)=>{stored=value;}};
+const {smartDevices,changeCamera,cameraEnabled,smartAlertsContent}=await import('../prototype/smart.js');
+test('three existing products have independently saved camera switches',()=>{assert.deepEqual(smartDevices.map(d=>d.id),['omni-s1-pro','video-doorbell-e340','eufycam-s3-pro']);assert.equal(cameraEnabled('eufycam-s3-pro'),true);changeCamera('eufycam-s3-pro',false,'ann');assert.equal(cameraEnabled('eufycam-s3-pro'),false);assert.equal(cameraEnabled('video-doorbell-e340'),true);assert.equal(smartAlertsContent(),'');});
+test('another member turning a camera off and back on creates both alerts',()=>{changeCamera('video-doorbell-e340',false,'emma');changeCamera('video-doorbell-e340',true,'james');const html=smartAlertsContent();assert.match(html,/Emma turned off Video Doorbell E340/);assert.match(html,/James turned on Video Doorbell E340/);assert.equal(cameraEnabled('video-doorbell-e340'),true);assert.equal(JSON.parse(stored).logs.filter(l=>!l.reviewed).length,2);});
+test('unchanged or invalid commands do not generate misleading notifications',()=>{const before=stored;assert.equal(changeCamera('video-doorbell-e340',true,'james'),null);assert.equal(changeCamera('missing',false,'emma'),null);assert.equal(changeCamera('eufycam-s3-pro',true,'unknown'),null);assert.equal(stored,before);});

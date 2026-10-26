@@ -1,4 +1,4 @@
-import { requestCards } from './features.js?v=storage-switches-1';
+import { requestCards } from './features.js?v=smart-controls-1';
 // Illustrative cloud-processing requests, not observed vendor access or real transfers.
 const key='cctv.prototype.cloud-events.v1';
 let choices={};try{choices=JSON.parse(localStorage.getItem(key)||'{}')||{};}catch{}

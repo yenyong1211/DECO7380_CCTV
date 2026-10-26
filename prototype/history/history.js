@@ -1,5 +1,5 @@
 import { cloudEventContent, bindCloudEvent } from '../cloud-events.js?v=storage-switches-1';
-import { featureView, installFeatures, notificationExtras, requestCards, decisionHistory } from '../features.js?v=storage-switches-1';
+import { featureView, installFeatures, notificationExtras, requestCards, decisionHistory } from '../features.js?v=smart-controls-1';
 import { shouldShowPrivacyIntro, privacyView, settingsView } from '../privacy.js?v=eufy-9';
 import { verificationView, setDemoPermissions } from '../auth.js?v=eufy-9';
 import { productView } from '../products.js?v=clips-1';
