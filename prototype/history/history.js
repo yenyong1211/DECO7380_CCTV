@@ -1,4 +1,4 @@
-import { featureView, installFeatures, notificationExtras, requestCards, decisionHistory } from '../features.js?v=clips-1';
+import { featureView, installFeatures, notificationExtras, requestCards, decisionHistory } from '../features.js?v=clips-2';
 import { shouldShowPrivacyIntro, privacyView, settingsView } from '../privacy.js?v=eufy-9';
 import { verificationView, setDemoPermissions } from '../auth.js?v=eufy-9';
 import { productView } from '../products.js?v=clips-1';
