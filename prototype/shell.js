@@ -31,7 +31,7 @@ export function setupShell(){
  document.addEventListener('click',e=>{const button=e.target.closest('[data-original]');if(button){if(button.dataset.original==='Settings'){toggle(false);location.hash='settings';return;}if(button.dataset.original==='Services'){toggle(false);location.hash='services';return;}add.hidden=true;document.querySelector('#add-toggle').setAttribute('aria-expanded','false');document.querySelector('#native-title').textContent=button.dataset.original;document.querySelector('#native-dialog').showModal();}});
 }
 export function updateShell(route){
- const active=(route.startsWith('history')||route.startsWith('events'))?'events':(tabs.map(x=>x.toLowerCase()).includes(route)?route:'home');
+ const active=route.startsWith('services/')?'services':(route.startsWith('history')||route.startsWith('events'))?'events':(tabs.map(x=>x.toLowerCase()).includes(route)?route:'home');
  document.querySelector('.mobile-nav').innerHTML=nav(active);
  document.querySelector('.desktop-nav').innerHTML=`<nav>${nav(active)}</nav><div class="nav-divider"></div><p class="sidebar-note">eufy interface reference<br>Access History in Events</p>`;
  document.body.dataset.route=route;
@@ -94,4 +94,3 @@ export function bindEventsCalendar(onChange){
  document.querySelector('#calendar-today').onclick=()=>{eventDay=21;rangeStart="00:00";rangeEnd="23:59";dialog.close();onChange();};document.querySelector('#calendar-confirm').onclick=()=>{const from=document.querySelector('#range-start'),to=document.querySelector('#range-end');to.setCustomValidity('');if(!from.reportValidity()||!to.reportValidity())return;if(to.value<from.value){to.setCustomValidity('End time must be after start time.');to.reportValidity();return;}rangeStart=from.value;rangeEnd=to.value;eventDay=selected;dialog.close();onChange();};
 
 }
-

@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+const writes=[];
+globalThis.localStorage={getItem:()=>null,setItem:(key,value)=>writes.push(JSON.parse(value))};
+const {decide,consume,requestCards,decisionHistory,featureView}=await import('../prototype/features.js');
+test('one-time clip access requires approval and cannot be reused',()=>{assert.equal(consume('emma21'),null);decide('emma21','once','faces');assert.ok(!decisionHistory(21).includes('Viewed approved clip'));assert.equal(consume('emma21'),'faces');assert.equal(consume('emma21'),null);});
+test('repeated access applies to one clip and can be revoked',()=>{decide('james21','repeat','original');assert.equal(consume('james21'),'original');assert.equal(consume('james21'),'original');assert.equal(consume('request24'),null);decide('james21','revoke');assert.equal(consume('james21'),null);});
+test('denial blocks viewing and does not create a view event',()=>{decide('request24','deny');assert.equal(consume('request24'),null);assert.match(decisionHistory(24),/Request denied/);assert.ok(!decisionHistory(24).includes('Viewed approved clip'));});
+test('unregistered sighting cannot be approved as a registered viewer',()=>{assert.equal(decide('visitor23','once'),false);assert.equal(consume('visitor23'),null);assert.match(requestCards(23),/Unrecognised person near your door/);});
+test('three devices and device services render independently of camera history',()=>{const app={};assert.equal(featureView(app,'services'),true);for(const name of ['Omni S1 Pro','Video Doorbell E340','eufyCam S3 Pro'])assert.ok(app.innerHTML.includes(name));assert.equal(featureView(app,'services/device/omni-s1-pro'),true);assert.ok(!app.innerHTML.includes('Viewing permissions'));assert.equal(featureView(app,'sightings'),true);assert.equal((app.innerHTML.match(/data-clip=/g)||[]).length,4);assert.equal(featureView(app,'home'),false);});
+test('decisions and consumption are persisted',()=>{assert.ok(writes.some(s=>s.decisions.emma21?.remaining===0));});

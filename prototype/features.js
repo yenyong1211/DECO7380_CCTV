@@ -1,0 +1,77 @@
+// Local interactive study data only; no connected device, cloud or real approval service.
+export const requests=[
+ {id:'emma21',day:21,time:'10:20',person:'Emma',device:'eufyCam S3 Pro',place:'Living Room',title:'Emma requests a recording',detail:'Recording: 21 Oct, 09:00–09:05. Preview the clip before deciding.'},
+ {id:'james21',day:21,time:'08:05',person:'James',device:'Video Doorbell E340',place:'Front Door',title:'James requests a doorbell clip',detail:'Recording: 21 Oct, 07:30–07:35. Preview the clip before deciding.'},
+ {id:'visitor23',day:23,time:'18:12',person:'Unrecognised visitor',device:'Video Doorbell E340',place:'Front Door',title:'Unrecognised person near your door',detail:'A person remained near the entrance for about two minutes. Their identity and intention are unknown.',sighting:true},
+ {id:'request24',day:24,time:'14:08',person:'Emma',device:'eufyCam S3 Pro',place:'Living Room',title:'Emma requests a clip containing you',detail:'Recording: 24 Oct, 13:50–13:55. Your face stays hidden until you approve original visibility.'}
+];
+const key='cctv.prototype.clip-requests.v1';
+const initial=()=>({decisions:{},logs:[],storage:{mode:'local',backup:false,retention:'30'},consent:{}});
+let state=initial();try{state={...state,...JSON.parse(localStorage.getItem(key)||'{}')};}catch{}
+const safe=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function save(){try{localStorage.setItem(key,JSON.stringify(state));}catch{}}
+function log(r,action){state.logs.unshift({id:r.id,day:r.day,time:r.time,person:r.person,device:r.device,action});save();}
+export function decide(id,choice,visibility='faces'){
+ const r=requests.find(r=>r.id===id);if(!r||r.sighting)return false;
+ state.decisions[id]={choice,visibility,remaining:choice==='once'?1:0};
+ log(r,choice==='deny'?'Request denied':choice==='once'?'Approved once · not yet viewed':choice==='repeat'?'Repeated access approved for this clip':'Permission revoked');return true;
+}
+export function consume(id){const r=requests.find(r=>r.id===id),d=state.decisions[id];if(!r||!d||!['once','repeat'].includes(d.choice)||(d.choice==='once'&&d.remaining!==1))return null;if(d.choice==='once')d.remaining=0;log(r,'Viewed approved clip'+(d.choice==='once'?' · one-time permission used':''));return d.visibility;}
+const status=r=>{const d=state.decisions[r.id];return !d?'Pending':d.choice==='once'?(d.remaining?'Allowed once · unused':'One-time permission used'):d.choice==='repeat'?'Repeated access allowed':d.choice==='deny'?'Denied':'Revoked';};
+function card(r){return `<article class="fx-card"><div class="fx-row"><div><h3>${r.title}</h3><p>Oct ${r.day} · ${r.time} · ${r.device}</p></div><span class="badge">${r.sighting?'Sighting':status(r)}</span></div><p>${r.detail}</p><button class="eufy-secondary" data-clip="${r.id}">View Video</button></article>`;}
+export function requestCards(day){return `<section class="fx-section"><div class="fx-row"><h2>Requests & notifications</h2><a href="#sightings">View all</a></div>${requests.filter(r=>r.day===day).map(card).join('')||'<p>No requests for this date.</p>'}</section>`;}
+export function decisionHistory(day){const logs=state.logs.filter(l=>l.day===day);return logs.length?`<section class="fx-section"><h2>Request decisions & actual views</h2>${logs.map(l=>`<div class="fx-log"><strong>${safe(l.person)}</strong><span>${safe(l.action)}</span><small>Oct ${l.day} · ${l.time} · ${safe(l.device)} · Demo</small></div>`).join('')}</section>`:'';}
+function modal(id){
+ const r=requests.find(r=>r.id===id);if(!r)return;
+ document.querySelector('#clip-dialog')?.remove();
+ const dialog=document.createElement('dialog');dialog.id='clip-dialog';dialog.className='fx-dialog';
+ const d=state.decisions[id];
+ dialog.innerHTML=`<button class="fx-close" aria-label="Close video preview">×</button><h2>${r.title}</h2><p>Oct ${r.day} · ${r.device} · Simulated animation</p><video controls playsinline preload="metadata" poster="clips/${id}-masked.png" src="clips/${id}-masked.mp4" aria-label="Face-masked animated video preview"></video><p class="fx-note">Preview is face-masked. Watching this preview does not approve anyone’s access.</p><div id="clip-options">${r.sighting?`<p>The visitor is not a registered user. No identity or intent has been inferred.</p><button class="eufy-secondary" id="dismiss-sighting">Dismiss alert</button><details><summary>Original-visibility request (demo)</summary><p>Original footage stays locked until a simulated consent review is completed. This does not contact a person or police.</p><button class="eufy-secondary" id="request-consent">Request review</button><button class="eufy-secondary" id="simulate-consent" hidden>Simulate subject consent</button><button class="eufy-secondary" id="show-original" hidden>View consent-approved original</button></details>`:`<p>Play the preview before making a decision.</p><label class="fx-field">What ${r.person} may see <select id="clip-visibility"><option value="faces">Face hidden</option><option value="original">Original view (your consent)</option></select></label><div class="fx-buttons" id="approval-buttons"><button class="eufy-secondary" data-choice="deny" disabled>Deny</button><button class="eufy-primary" data-choice="once" disabled>Allow once</button><button class="eufy-secondary" data-choice="repeat" disabled>Allow repeated access</button></div><p class="fx-note">Applies only to this recorded clip, not live cameras or other recordings. One-time access ends when the viewer closes the clip.</p><div class="fx-buttons"><button class="eufy-secondary" id="viewer-test">Open as ${r.person} (demo)</button><button class="eufy-secondary" data-choice="revoke">Revoke access</button></div>`}</div><p id="clip-result" role="status" aria-live="polite">${r.sighting?'Face hidden by default.':status(r)}</p>`;
+ document.body.append(dialog);dialog.showModal();const video=dialog.querySelector('video'),result=dialog.querySelector('#clip-result');
+ dialog.querySelector('.fx-close').onclick=()=>dialog.close();dialog.addEventListener('close',()=>{video.pause();dialog.remove();window.dispatchEvent(new Event('cctv:clips-updated'));});
+ let previewed=false;
+ video.addEventListener('timeupdate',()=>{if(video.currentTime>=.5&&!previewed){previewed=true;dialog.querySelectorAll('#approval-buttons button').forEach(b=>b.disabled=false);}});
+ dialog.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{const choice=b.dataset.choice;if(choice!=='revoke'&&!previewed)return;video.pause();video.controls=true;video.src=`clips/${id}-masked.mp4`;video.load();decide(id,choice,dialog.querySelector('#clip-visibility')?.value||'faces');result.textContent=status(r)+'. No viewing event has been recorded.';});
+ dialog.querySelector('#viewer-test')?.addEventListener('click',()=>{
+ const visibility=consume(id);if(!visibility){result.textContent='Access denied. A new approval is required.';video.pause();video.src=`clips/${id}-masked.mp4`;video.load();return;}
+ // A one-time viewer gets one playback. Closing or ending requires another approval.
+ video.src=`clips/${id}-${visibility==='original'?'original':'masked'}.mp4`;video.load();video.play().catch(()=>{});result.textContent=`${r.person} opened this clip · ${visibility==='original'?'Original view approved':'Face hidden'}. Actual demo view recorded.`;
+ if(state.decisions[id].choice==='once'){video.controls=false;video.addEventListener('ended',()=>{video.src=`clips/${id}-masked.mp4`;video.controls=true;video.load();result.textContent='One-time viewing ended. Another approval is required.';},{once:true});}
+ });
+ dialog.querySelector('#dismiss-sighting')?.addEventListener('click',()=>{log(r,'Sighting dismissed · no camera access');result.textContent='Alert dismissed. Face remains hidden.';});
+ dialog.querySelector('#request-consent')?.addEventListener('click',()=>{result.textContent='Waiting for consent review (simulation).';dialog.querySelector('#simulate-consent').hidden=false;});
+ dialog.querySelector('#simulate-consent')?.addEventListener('click',()=>{state.consent[id]=true;log(r,'Simulated subject consent recorded');result.textContent='Demo consent approved. No real person or police was contacted.';dialog.querySelector('#show-original').hidden=false;});
+ dialog.querySelector('#show-original')?.addEventListener('click',()=>{if(!state.consent[id])return;video.src=`clips/${id}-original.mp4`;video.load();video.play().catch(()=>{});log(r,'Viewed original after simulated subject consent');});
+}
+const devices=[{id:'omni-s1-pro',name:'Omni S1 Pro',type:'Robot vacuum',battery:88,place:'Living Room',extra:'Docked · Dust bag OK · Mop ready',storage:'Cleaning maps'}, {id:'video-doorbell-e340',name:'Video Doorbell E340',type:'Video doorbell',battery:76,place:'Front Door',extra:'Lens clear · Motion detection on',storage:'8 GB local · demo usage 2.1 GB'}, {id:'eufycam-s3-pro',name:'eufyCam S3 Pro',type:'Security camera',battery:92,place:'Living Room',extra:'HomeBase connected · Lens clear',storage:'HomeBase 3 · demo usage 12 GB'}];
+function tabs(active){return `<nav class="native-tabs"><a href="#services" ${active==='insights'?'aria-current="page"':''}>Insights</a><a href="#services/list" ${active==='services'?'aria-current="page"':''}>Services</a></nav>`;}
+const intro='<p class="fx-note">Interactive prototype · Device values and storage settings are simulated, not readings from connected products.</p>';
+function health(d){return `<article class="fx-card"><div class="fx-row"><h3>${d.name}</h3><span class="badge">Online · Demo</span></div><p>${d.place} · Battery ${d.battery}% · Wi-Fi good</p><progress max="100" value="${d.battery}" aria-label="Demo battery ${d.battery}%"></progress><p>Last sync: 2 minutes ago (demo)</p><p>${d.extra}</p><p>Storage: ${d.storage}</p><a class="eufy-secondary" href="#services/device/${d.id}">Device services</a></article>`;}
+export function featureView(app,path){
+ if(path==='services'){
+ app.className='native-page native-services';app.innerHTML=tabs('insights')+'<h1>Space Status</h1><p class="space-status">2 Spaces | 3 Devices</p>'+intro+`<div class="service-grid"><section><h2>Your devices</h2>${devices.map(d=>`<article class="fx-card"><h3>${d.name}</h3><p>${d.type} · ${d.place}</p><a href="#product/${d.id}">View Product →</a></article>`).join('')}</section><section><h2>Device Health</h2>${devices.map(health).join('')}</section></div>`;return true;
+ }
+ if(path==='services/list'||path.startsWith('services/device/')){
+ const selected=devices.find(d=>path.endsWith('/'+d.id));
+ app.className='native-page';app.innerHTML=tabs('services')+`<h1>${selected?selected.name+' services':'Services'}</h1>${intro}<div class="fx-service-grid">${[['Storage & Backup','Choose local storage and cloud backup.','#storage'],['Sightings & Notifications','Preview detections and incoming clip requests.','#sightings'],['Access History','Review actual viewing and approval decisions.','#events/access'],['Viewing permissions','Manage what shared users can see.',selected?.type==='Video doorbell'?'#events/permissions/james':'#events/permissions/emma'],['Privacy settings','Review privacy information and preferences.','#privacy/basics'],['Device Health','Check demo battery, connection and maintenance.','#services']].filter(x=>!selected||selected.type!=='Robot vacuum'||!['Viewing permissions','Access History'].includes(x[0])).map(([title,copy,href])=>`<a class="fx-card" href="${href}"><h3>${title}</h3><p>${copy}</p><span>Open →</span></a>`).join('')}</div>`;return true;
+ }
+ if(path==='sightings'){
+ app.className='native-page';app.innerHTML='<div class="page-heading"><a href="#notifications">‹</a><h1>Sightings & Notifications</h1></div>'+intro+'<p>Detection alerts describe people in footage. Access requests describe people who want to view footage.</p>'+requests.map(card).join('');return true;
+ }
+ if(path==='storage'){
+ const st=state.storage;app.className='native-page';app.innerHTML=`<div class="page-heading"><a href="#home">‹</a><h1>Storage & Backup</h1></div>${intro}<section class="fx-card"><h2>Storage location</h2><p>Household demo preferences · no device selection required.</p><label class="fx-field">Save recordings to <select id="storage-mode"><option value="local">Local only</option><option value="cloud">Cloud only</option><option value="both">Local + Cloud</option></select></label><p class="fx-note">These are prototype choices, not confirmed compatibility for every device. Robot maps are separate from camera recordings.</p><label class="fx-field"><input type="checkbox" id="storage-backup"> Automatic cloud backup</label><label class="fx-field">Cloud retention <select id="storage-retention"><option value="7">7 days</option><option value="30">30 days</option><option value="90">90 days</option></select></label><p>Local storage: 14.1 GB used / 128 GB demo capacity. Oldest recordings are overwritten when full.</p><p>Cloud storage: <span id="cloud-usage">${st.deleted?'0':'1.2'} GB used / 10 GB demo capacity</span></p><p id="storage-status" role="status"></p><button class="eufy-secondary" id="delete-cloud">Delete demo cloud copies</button><p class="fx-note">Turning backup off does not delete existing cloud copies. Deleting cloud copies does not delete local copies.</p></section><a class="eufy-secondary" href="#sightings">View demo clips</a>`;
+ const mode=app.querySelector('#storage-mode'),backup=app.querySelector('#storage-backup'),retention=app.querySelector('#storage-retention');mode.value=st.mode;backup.checked=st.backup;retention.value=st.retention;
+ const update=()=>{backup.disabled=mode.value==='local';retention.disabled=mode.value==='local';if(backup.disabled)backup.checked=false;st.mode=mode.value;st.backup=backup.checked;st.retention=retention.value;save();app.querySelector('#storage-status').textContent=`Demo saved · ${mode.options[mode.selectedIndex].text} · Cloud backup ${st.backup?'on':'off'}. No real data moved.`;};[mode,backup,retention].forEach(e=>e.onchange=update);update();
+ app.querySelector('#delete-cloud').onclick=()=>{st.deleted=true;save();app.querySelector('#cloud-usage').textContent='0 GB used / 10 GB demo capacity';app.querySelector('#storage-status').textContent='Demo cloud copies cleared. Local copies are unchanged.';};return true;
+ }
+ return false;
+}
+export function installFeatures(){
+ document.addEventListener('click',e=>{
+ const clip=e.target.closest('[data-clip]');if(clip){modal(clip.dataset.clip);return;}
+ const b=e.target.closest('[data-original]');if(b&&['Cloud Backup','Services'].includes(b.dataset.original)){
+ e.preventDefault();e.stopImmediatePropagation();document.querySelector('#close-drawer')?.click();location.hash=b.dataset.original==='Cloud Backup'?'storage':'services/list';
+ }
+ },true);
+}
+export function notificationExtras(app){app.insertAdjacentHTML('beforeend',`<section class="fx-section"><h2>Your security notifications</h2><p>Preview a face-masked clip before approving a request.</p>${requests.map(card).join('')}</section>`);}
