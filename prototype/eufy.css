@@ -29,3 +29,6 @@ body{background:#f2f7fd;padding:0;color:#071d26}a{color:inherit;text-decoration:
 
 .device-actions.device-actions-two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .device-card .camera-product{color:#91acc4}
+
+/* Animated previews preserve the original scene framing. */
+.device-room>picture{display:block;width:100%;height:100%}.device-room>picture>img{display:block;width:100%;height:100%;object-fit:contain}
