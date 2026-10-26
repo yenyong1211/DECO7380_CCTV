@@ -123,3 +123,9 @@ Start with [the workflow](docs/WORKFLOW.md) for the complete project journey, or
 ## Validation
 
 Run all routing/content and agreement checks with Node 22+: `node --test tests/*.test.mjs`. Search deep links preserve local hosting and the `/DECO7380_CCTV/` GitHub Pages prefix. The example Exposure 5/10 and User Control 8/10 scores remain fixed researcher-coded illustrations, with evidence and limitations available on demand. Original vector illustrations are in `privacy/visuals.js`.
+
+## Three-product privacy content
+
+The third-party platform now offers eufyCam S3 Pro, Video Doorbell E340 and Omni S1 Pro profiles, using the existing eufy product catalog. Product choice is carried in the URL and restored with browser Back/Forward. Product-specific facts, visual data flows, controls, evidence and review links change with the selected profile. Explicit product names in search choose that product; switching the product card clears an earlier query to avoid mixing devices.
+
+S3 Pro retains the clearly illustrative 5/10 and 8/10 example scores. The supplied research reference assigns E340 Exposure 4–6/10 and Control 7/10, and Omni S1 Pro Exposure 5/10 and Control 6/10. The E340 range represents incomplete evidence, not a probability. S3 Pro remains a historical 21 September 2026 study label; it was not re-scored. Claims and scores are attributed to the user-provided research reference, not represented as independently verified manufacturer/account facts. No new factor breakdown was invented for E340 or Omni. The robot profile explains obstacle sensing and cleaning maps, and offers no live camera preview or viewer-permission route. Its controls link to Smart and its device services. Camera/doorbell profiles link to Emma/James respectively. Storage and clip actions link to the existing storage and sightings screens; no eufy screens are recreated.

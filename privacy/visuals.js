@@ -1,5 +1,7 @@
 // Original vector illustrations: no real footage, faces or device data.
 const shapes={
+ vacuum:'<rect x="17" y="8" width="46" height="20" rx="5"/><path d="M25 15h30"/><ellipse cx="40" cy="53" rx="28" ry="18"/><path d="M12 49v8c0 11 56 19 56 0v-8"/><ellipse cx="40" cy="45" rx="8" ry="4"/><path d="M23 55h8m18 0h8"/>',
+ doorbell:'<rect x="24" y="5" width="32" height="69" rx="12"/><circle cx="40" cy="23" r="9"/><circle cx="40" cy="43" r="6"/><circle cx="40" cy="61" r="6"/><circle cx="40" cy="23" r="3"/>',
  camera:'<rect x="18" y="20" width="44" height="34" rx="10"/><circle cx="40" cy="37" r="10"/><circle cx="40" cy="37" r="4"/><path d="M30 55v8m20-8v8M23 65h34m5-34 12-7v26l-12-7"/>',
  support:'<path d="M22 36v-7a18 18 0 0 1 36 0v7M22 30h-6v17h9V30Zm36 0h6v17h-9V30Zm4 17v8H45"/><circle cx="40" cy="30" r="9"/><path d="M28 55q12-13 24 0M36 55h9"/>',
  people:'<circle cx="28" cy="25" r="10"/><path d="M10 59v-8a18 18 0 0 1 36 0v8M47 18a10 10 0 0 1 0 20m7 5a17 17 0 0 1 16 16"/>',
