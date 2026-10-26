@@ -1,0 +1,19 @@
+// Illustrative cloud-processing requests, not observed vendor access or real transfers.
+const key='cctv.prototype.cloud-events.v1';
+let choices={};try{choices=JSON.parse(localStorage.getItem(key)||'{}')||{};}catch{}
+export const cloudVariant=mode=>mode==='original'?'original':mode==='person'?'person':'masked';
+export function cloudEventContent(day,from='00:00',to='23:59'){
+ if(day>26||'02:00'<from||'02:00'>to)return '<section class="fx-section"><h1>Camera Events</h1><p>No camera events in this date and time range.</p></section>';
+ const choice=choices[day]||{mode:'faces',status:'pending'};
+ return `<section class="fx-section"><h1>Camera Events</h1><article class="fx-card"><div class="fx-row"><h2>Daily cloud backup request</h2><span class="badge">Oct ${day} · 02:00</span></div><p>eufyCam S3 Pro · Living Room</p><p><strong>Requested by:</strong> eufy cloud service (prototype)</p><p><strong>Reason:</strong> Store today’s recording in the vendor cloud and make it available to retrieve in your app.</p><p>Camera → vendor cloud storage → your app</p><p class="fx-note">Simulated daily workflow, not an actual eufy activity log. Cloud processing does not mean a staff member watched your video. Local-only storage does not require this cloud step.</p><label class="fx-field">What may be uploaded to the cloud? <select id="cloud-event-visibility"><option value="faces">Face hidden</option><option value="person">Whole person hidden</option><option value="original">Original view</option></select></label><video id="cloud-event-video" controls playsinline preload="metadata" src="clips/emma21-${cloudVariant(choice.mode)}.mp4" poster="clips/emma21-${cloudVariant(choice.mode)}.png" style="width:100%;max-width:560px;border-radius:15px" aria-label="Sample cloud upload visibility preview"></video><p class="fx-note">Illustrative sample animation reused for daily requests; not footage captured on this date. In this proposed workflow, masking happens before upload.</p><div class="fx-buttons"><button id="cloud-event-allow" class="eufy-primary">Allow this backup</button><button id="cloud-event-deny" class="eufy-secondary">Decline cloud upload</button></div><p id="cloud-event-status" role="status" aria-live="polite"></p><p class="fx-note">Applies to this day’s simulated cloud task only. It does not grant a person viewing permission. Changing visibility after approval requires confirming again; it does not change an existing cloud copy.</p><a href="#storage">Storage & Backup settings →</a></article></section>`;
+}
+export function bindCloudEvent(app,day){
+ const select=app.querySelector('#cloud-event-visibility');if(!select)return;
+ const result=app.querySelector('#cloud-event-status'),video=app.querySelector('#cloud-event-video');
+ const current=choices[day]||{mode:'faces',status:'pending'};select.value=current.mode;
+ const label=()=>select.options[select.selectedIndex].text;
+ const status=()=>{result.textContent=current.status==='allowed'?`Success · ${label()} · Simulated upload complete → vendor cloud stored → retrieved in your app.`:current.status==='denied'?'Cloud upload declined. No cloud transfer simulated. Local recording is unchanged.':'Waiting for your permission. No cloud upload has been simulated.';};status();
+ select.onchange=()=>{video.pause();const variant=cloudVariant(select.value);video.src=`clips/emma21-${variant}.mp4`;video.poster=`clips/emma21-${variant}.png`;video.load();video.play().catch(()=>{});result.textContent=`Preview: ${label()}. Confirm to apply this choice to this daily task.`;};
+ const save=statusValue=>{choices[day]={mode:select.value,status:statusValue};Object.assign(current,choices[day]);let saved=true;try{localStorage.setItem(key,JSON.stringify(choices));}catch{saved=false;}status();if(!saved)result.textContent+=' Saved for this session only.';};
+ app.querySelector('#cloud-event-allow').onclick=()=>save('allowed');app.querySelector('#cloud-event-deny').onclick=()=>save('denied');
+}
