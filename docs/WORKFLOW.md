@@ -214,18 +214,18 @@ All modules in the GitHub repository belong to the project, including feature-br
 | Add Device, Favorites, QR and contextual dialogs | Context interactions; not completed hardware setup or checkout |
 | SVG illustrations, tests and documentation | Supporting assets/evidence, not additional user screens |
 
-Home → **My Devices** displays exactly three products using scene-based cards: **Living Room — Omni C28 Robot Vacuum** (the original living-room scene), **Front Door — Video Doorbell E340** (the original doorway scene), and **Indoor Camera — Indoor Cam E30** (an indoor-camera illustration). The robot card opens its product details; the doorbell and indoor-camera cards open illustrated camera views with Access History and Permissions links. The duplicated standalone product cards have been removed. E30 remains the previously confirmed camera model until a different model is supplied.
+Home → **My Devices** displays exactly three products using animated scene cards: **Living Room — Robot Vacuum Omni S1 Pro**, **Front Door — Video Doorbell E340**, and **eufyCam S3 Pro**. The original living-room and doorway visual styles are retained; the camera uses a matching blue scene. Each card offers product details and an official eufy link. The doorbell and security-camera scenes open their illustrated camera views, with Access History and Permissions available there. Product details return to Home. There are no duplicated standalone product cards. Scene illustrations are not live footage, and reduced-motion users receive static scene images.
 
 ## 12. Current implementation versus tutorial design
 
-**Source snapshots inspected:** `main` at `2bb1fe2`; `feat/privacy-search-entry` at `43b4c99`. These are the evidence snapshots for this file, rather than a promise that future repository versions behave identically.
+**Source snapshots inspected:** `main` at `2bb1fe2`; `feat/privacy-search-entry` at `43b4c99`. These are historical evidence snapshots for the initial workflow. The Home/product section was rechecked against main `99a81ec` on 26 October 2026, including the confirmed S3 Pro model and animated scenes.
 
 | Item | Observed status | Workflow treatment |
 | --- | --- | --- |
 | Search, structured answers, profile and linked actions | Implemented on the search feature branch | Included as part of the third-party platform |
 | One-page-at-a-time tutorial with boxes and arrows | Defined by the team in this workflow; not found in the inspected search implementation | Core intended user journey to implement |
 | Agreement, welcome and eufy-facing screens | Present on main | Included as the collaboration/improvement side |
-| Third-party root entry on current main | Not merged; main root redirects to agreement | Combined workflow includes both modules; publication is separate |
+| Third-party root entry on current main | Integrated; root opens the third-party platform | Continue in eufy opens the agreement; targeted controls retain their routes |
 | Face-verification results in Access History | Audit helpers exist, but current History rendering reads seeded visit data without the verification panel | Do not claim generated verification results appear there automatically |
 | Owner identity | Shell displays ANN; some sample people/verifier data still say Alex | Use ANN’s Home for navigation; align sample identities during integration |
 | Example privacy scores | Fixed Exposure 5/10 and User Control 8/10 | Explain as research examples, not measured account status |
