@@ -32,3 +32,10 @@ body{background:#f2f7fd;padding:0;color:#071d26}a{color:inherit;text-decoration:
 
 /* Animated previews preserve the original scene framing. */
 .device-room>picture{display:block;width:100%;height:100%}.device-room>picture>img{display:block;width:100%;height:100%;object-fit:contain}
+
+/* Preserve the doorway illustration without relying on the empty GIF asset. */
+.device-room>.doorbell-scene{display:block;width:100%;height:100%}
+.doorbell-scene>svg{display:block;width:100%;height:100%}
+.doorbell-sway{transform-box:fill-box;transform-origin:50% 100%;animation:doorbell-plant-sway 4s ease-in-out infinite}
+@keyframes doorbell-plant-sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@media(prefers-reduced-motion:reduce){.doorbell-sway{animation:none}}
