@@ -1,3 +1,4 @@
+import { requestCards } from './features.js?v=events-combined-1';
 // Illustrative cloud-processing requests, not observed vendor access or real transfers.
 const key='cctv.prototype.cloud-events.v1';
 let choices={};try{choices=JSON.parse(localStorage.getItem(key)||'{}')||{};}catch{}
@@ -17,3 +18,5 @@ export function bindCloudEvent(app,day){
  const save=statusValue=>{choices[day]={mode:select.value,status:statusValue};Object.assign(current,choices[day]);let saved=true;try{localStorage.setItem(key,JSON.stringify(choices));}catch{saved=false;}status();if(!saved)result.textContent+=' Saved for this session only.';};
  app.querySelector('#cloud-event-allow').onclick=()=>save('allowed');app.querySelector('#cloud-event-deny').onclick=()=>save('denied');
 }
+
+export function cameraEventsContent(day,from='00:00',to='23:59'){return cloudEventContent(day,from,to)+requestCards(day,from,to);}

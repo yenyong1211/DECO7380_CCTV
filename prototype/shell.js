@@ -1,4 +1,4 @@
-import { cloudEventContent, bindCloudEvent } from './cloud-events.js?v=cloud-events-1';
+import { cameraEventsContent, bindCloudEvent } from './cloud-events.js?v=events-combined-1';
 import { catalog, productThumbnail } from './products.js?v=three-devices-7';
 import { getStartupPermissions } from './onboarding/permissions.js?v=eufy-9';
 const svg = (paths) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
@@ -72,7 +72,7 @@ export function nativeView(page,app){
  app.innerHTML=`<div class="page-heading"><a href="#home" aria-label="Back to Home">‹</a><h1>${device.name}</h1><span class="badge">${device.model}</span></div><section class="camera-detail"><div class="device-preview detail-preview"><div class="device-room">${device.id==='front-door'?entrance:indoorCameraScene}</div><span class="demo-view">Demo live view</span><span class="device-location">${device.location} · ${device.model}</span></div><p class="camera-demo-note">Illustration only · This prototype is not connected to a real camera.</p><div class="camera-detail-actions"><a class="eufy-primary" href="#events/access">Access History</a><a class="eufy-secondary" href="#events/permissions/${device.person}">Viewing Permissions</a></div><div class="camera-access-info"><strong>${device.member}'s viewing permissions</strong><p>Review who can access this camera and choose what they can see.</p></div></section>`;
  }
  else if(page==='events'){
- app.innerHTML=eventsHeader('events')+cloudEventContent(eventDay,rangeStart,rangeEnd);
+ app.innerHTML=eventsHeader('events')+cameraEventsContent(eventDay,rangeStart,rangeEnd);
  bindCloudEvent(app,eventDay);
  bindEventsCalendar(()=>nativeView(page,app));
  }else if(page==='messages'){
