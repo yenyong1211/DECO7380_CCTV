@@ -1,3 +1,4 @@
+import { storageView } from './storage.js?v=storage-switches-1';
 // Local interactive study data only; no connected device, cloud or real approval service.
 export const requests=[
  {id:'emma21',day:21,time:'10:20',person:'Emma',device:'eufyCam S3 Pro',place:'Living Room',title:'Emma requests a recording',detail:'Recording: 21 Oct, 09:00–09:05. Request reason: I want to check whether I left my keys in the living room.'},
@@ -72,12 +73,8 @@ export function featureView(app,path){
  if(path==='sightings'){
  app.className='native-page';app.innerHTML='<div class="page-heading"><a href="#notifications">‹</a><h1>Sightings & Notifications</h1></div>'+intro+'<p>Detection alerts describe people in footage. Access requests describe people who want to view footage.</p>'+requests.map(card).join('');return true;
  }
- if(path==='storage'){
- const st=state.storage;app.className='native-page';app.innerHTML=`<div class="page-heading"><a href="#home">‹</a><h1>Storage & Backup</h1></div>${intro}<section class="fx-card"><h2>Storage location</h2><p>Household demo preferences · no device selection required.</p><label class="fx-field">Save recordings to <select id="storage-mode"><option value="local">Local only</option><option value="cloud">Cloud only</option><option value="both">Local + Cloud</option></select></label><p class="fx-note">These are prototype choices, not confirmed compatibility for every device. Robot maps are separate from camera recordings.</p><label class="fx-field"><input type="checkbox" id="storage-backup"> Automatic cloud backup</label><label class="fx-field">Cloud retention <select id="storage-retention"><option value="7">7 days</option><option value="30">30 days</option><option value="90">90 days</option></select></label><p>Local storage: 14.1 GB used / 128 GB demo capacity. Oldest recordings are overwritten when full.</p><p>Cloud storage: <span id="cloud-usage">${st.deleted?'0':'1.2'} GB used / 10 GB demo capacity</span></p><p id="storage-status" role="status"></p><button class="eufy-secondary" id="delete-cloud">Delete demo cloud copies</button><p class="fx-note">Turning backup off does not delete existing cloud copies. Deleting cloud copies does not delete local copies.</p></section><a class="eufy-secondary" href="#sightings">View demo clips</a>`;
- const mode=app.querySelector('#storage-mode'),backup=app.querySelector('#storage-backup'),retention=app.querySelector('#storage-retention');mode.value=st.mode;backup.checked=st.backup;retention.value=st.retention;
- const update=()=>{backup.disabled=mode.value==='local';retention.disabled=mode.value==='local';if(backup.disabled)backup.checked=false;st.mode=mode.value;st.backup=backup.checked;st.retention=retention.value;save();app.querySelector('#storage-status').textContent=`Demo saved · ${mode.options[mode.selectedIndex].text} · Cloud backup ${st.backup?'on':'off'}. No real data moved.`;};[mode,backup,retention].forEach(e=>e.onchange=update);update();
- app.querySelector('#delete-cloud').onclick=()=>{st.deleted=true;save();app.querySelector('#cloud-usage').textContent='0 GB used / 10 GB demo capacity';app.querySelector('#storage-status').textContent='Demo cloud copies cleared. Local copies are unchanged.';};return true;
- }
+ if(path==='storage'){storageView(app,state.storage,save,intro);return true;}
+
  return false;
 }
 export function installFeatures(){
