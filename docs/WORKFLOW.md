@@ -214,6 +214,8 @@ All modules in the GitHub repository belong to the project, including feature-br
 | Add Device, Favorites, QR and contextual dialogs | Context interactions; not completed hardware setup or checkout |
 | SVG illustrations, tests and documentation | Supporting assets/evidence, not additional user screens |
 
+Access History also provides product-reference cards for **Video Doorbell E340** and the existing **Omni C28 Robot Vacuum**. Each opens its product details and official eufy page. These cards do not create viewing events or change camera permissions; the robot vacuum is reused rather than added twice.
+
 ## 12. Current implementation versus tutorial design
 
 **Source snapshots inspected:** `main` at `2bb1fe2`; `feat/privacy-search-entry` at `43b4c99`. These are the evidence snapshots for this file, rather than a promise that future repository versions behave identically.

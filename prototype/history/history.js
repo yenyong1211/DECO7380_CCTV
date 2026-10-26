@@ -1,6 +1,6 @@
 import { shouldShowPrivacyIntro, privacyView, settingsView } from '../privacy.js?v=eufy-9';
 import { verificationView, setDemoPermissions } from '../auth.js?v=eufy-9';
-import { productView } from '../products.js?v=eufy-9';
+import { productView, historyProductLinks } from '../products.js?v=history-products-1';
 import { initialiseStartupPermissions } from '../onboarding/permissions.js?v=eufy-9';
 import { people, history } from './data.js?v=eufy-9';
 import { setupShell, updateShell, nativeView, eventsHeader, bindEventsCalendar, getEventDay, getEventRange } from '../shell.js?v=ann-1';
@@ -22,7 +22,7 @@ function historyView() {
   const entries = Object.entries(history[day] || {}).map(([id,events])=>[id,events.filter(event=>event.time>=from&&event.time<=to)]).filter(([,events])=>events.length);
   const visits = entries.reduce((sum,[,events])=>sum+events.length,0);
   const weekday = new Date(2026,9,day).toLocaleDateString('en-US',{weekday:'short'});
-  app.innerHTML = `${eventsHeader('history')}<section class="access-content"><header><div class="heading"><h1 tabindex="-1">Access History</h1><span class="badge">Demo data</span></div><p class="subtitle">See who viewed your cameras and recordings</p></header><p class="hint">${icon('info')} Dates show access, not when video was recorded.${from!=='00:00'||to!=='23:59'?` · ${from}–${to}`:''}</p><section aria-label="Visits for selected date"><div class="summary"><strong>${day===21?'Today · ':''}${weekday}, Oct ${day}</strong><span class="muted">${entries.length} ${entries.length===1?'person':'people'}, ${visits} ${visits===1?'visit':'visits'}</span></div>${entries.length?entries.map(([id,events])=>personCard(id,events)).join(''):'<div class="empty">No camera access on this day.<br><br>Choose another date or time range to see visits.</div>'}</section><footer class="footer">${icon('lock')} Only you can see this access history.</footer></section>`;
+  app.innerHTML = `${eventsHeader('history')}<section class="access-content"><header><div class="heading"><h1 tabindex="-1">Access History</h1><span class="badge">Demo data</span></div><p class="subtitle">See who viewed your cameras and recordings</p></header><p class="hint">${icon('info')} Dates show access, not when video was recorded.${from!=='00:00'||to!=='23:59'?` · ${from}–${to}`:''}</p><section aria-label="Visits for selected date"><div class="summary"><strong>${day===21?'Today · ':''}${weekday}, Oct ${day}</strong><span class="muted">${entries.length} ${entries.length===1?'person':'people'}, ${visits} ${visits===1?'visit':'visits'}</span></div>${entries.length?entries.map(([id,events])=>personCard(id,events)).join(''):'<div class="empty">No camera access on this day.<br><br>Choose another date or time range to see visits.</div>'}</section>${historyProductLinks()}<footer class="footer">${icon('lock')} Only you can see this access history.</footer></section>`;
   bindEventsCalendar(historyView);
   app.querySelectorAll('[data-expand]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.expand; expanded.has(id)?expanded.delete(id):expanded.add(id); historyView(); app.querySelector(`[data-expand="${id}"]`).focus();}));
 }
