@@ -214,7 +214,7 @@ All modules in the GitHub repository belong to the project, including feature-br
 | Add Device, Favorites, QR and contextual dialogs | Context interactions; not completed hardware setup or checkout |
 | SVG illustrations, tests and documentation | Supporting assets/evidence, not additional user screens |
 
-Home → **My Devices** displays two indoor camera previews, **Video Doorbell E340**, and the existing **Omni C28 Robot Vacuum**. The doorbell and robot vacuum open product details with official eufy links. Product cards are located on Home, not Access History. They do not create viewing events or change camera permissions; the robot vacuum is reused rather than added twice.
+Home → **My Devices** displays exactly three products using scene-based cards: **Living Room — Omni C28 Robot Vacuum** (the original living-room scene), **Front Door — Video Doorbell E340** (the original doorway scene), and **Indoor Camera — Indoor Cam E30** (an indoor-camera illustration). The robot card opens its product details; the doorbell and indoor-camera cards open illustrated camera views with Access History and Permissions links. The duplicated standalone product cards have been removed. E30 remains the previously confirmed camera model until a different model is supplied.
 
 ## 12. Current implementation versus tutorial design
 

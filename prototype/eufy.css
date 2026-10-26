@@ -26,3 +26,6 @@ body{background:#f2f7fd;padding:0;color:#071d26}a{color:inherit;text-decoration:
 .product-main-image>svg{display:block;width:100%;height:360px}
 .catalog-image>svg{width:100%;height:230px}
 @media(max-width:899px){.doorbell-device-art{min-height:278px}.doorbell-device-art svg{height:230px}.product-main-image>svg{height:280px}.devices-heading p{line-height:1.7}}
+
+.device-actions.device-actions-two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.device-card .camera-product{color:#91acc4}
