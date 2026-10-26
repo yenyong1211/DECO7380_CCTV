@@ -1,4 +1,4 @@
-# CCTV Privacy — Understand, Find, and Control
+# AIRIS — CCTV Privacy Search
 
 A DECO7380 university design prototype exploring how home CCTV users can better understand their camera data and find the controls they need.
 
@@ -16,7 +16,7 @@ We aim to connect privacy information with practical guidance: help people under
 
 ### 1. Third-party privacy guidance platform
 
-The third-party platform is where users ask questions and explore their CCTV privacy profile. Its core design is a **step-by-step tutorial**, rather than an answer that leaves the user to find a setting alone.
+AIRIS opens with a search-only homepage. A collapsible navigation drawer contains Privacy Profile for three popular models, a curated model guide, and AIRIS website settings. Product details open on separate pages, leaving the search entry uncluttered. The search currently provides curated structured answers and explicit “Continue in eufy” links. The tutorial described below remains a future design specification.
 
 For example, a user asks **“Where are my privacy settings?”**. The tutorial shows one interface page at a time, highlights the relevant control with a box and arrow, and guides them through:
 
@@ -126,6 +126,17 @@ Run all routing/content and agreement checks with Node 22+: `node --test tests/*
 
 ## Three-product privacy content
 
-The third-party platform now offers eufyCam S3 Pro, Video Doorbell E340 and Omni S1 Pro profiles, using the existing eufy product catalog. Product choice is carried in the URL and restored with browser Back/Forward. Product-specific facts, visual data flows, controls, evidence and review links change with the selected profile. Explicit product names in search choose that product; switching the product card clears an earlier query to avoid mixing devices.
+The third-party platform now offers eufyCam S3 Pro, Video Doorbell E340 and Omni S1 Pro profiles, using the existing eufy product catalog. Product choice is carried in the URL and restored with browser Back/Forward. Product-specific facts, visual data flows, controls, evidence and review links change with the selected profile. Explicit product names in search choose that product. Product profiles are available in the collapsible Privacy Profile menu; the popular model guide offers model-specific suggested questions.
 
 S3 Pro retains the clearly illustrative 5/10 and 8/10 example scores. The supplied research reference assigns E340 Exposure 4–6/10 and Control 7/10, and Omni S1 Pro Exposure 5/10 and Control 6/10. The E340 range represents incomplete evidence, not a probability. S3 Pro remains a historical 21 September 2026 study label; it was not re-scored. Claims and scores are attributed to the user-provided research reference, not represented as independently verified manufacturer/account facts. No new factor breakdown was invented for E340 or Omni. The robot profile explains obstacle sensing and cleaning maps, and offers no live camera preview or viewer-permission route. Its controls link to Smart and its device services. Camera/doorbell profiles link to Emma/James respectively. Storage and clip actions link to the existing storage and sightings screens; no eufy screens are recreated.
+
+## AIRIS entry and website settings
+
+The homepage contains one search box, the AIRIS title and a short subtitle. Privacy Journey is removed from the interface. Exposure, Controls, Data Flow, Evidence and Review are grouped under each model’s independent profile page. Search results show the relevant answer without automatically displaying a full product profile.
+
+- `?page=product&product=video-doorbell-e340&view=flow` opens a product detail.
+- `?page=guide&product=omni-s1-pro` opens its curated question guide.
+- `?page=settings&section=privacy`, `data` or `profile` opens AIRIS settings.
+- Existing `?product=…&view=…` links continue to work.
+
+Settings offer a browser-local display name, default model and reduced motion. Search history is off by default; opting in stores up to 20 searches locally. Export and clear-history affect only AIRIS data, never the eufy prototype’s saved permissions. These preferences are not an online account. Questions appear in search URLs, so sharing a result link also shares its question. No AI service or real camera account is connected.

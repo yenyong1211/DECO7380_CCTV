@@ -1,0 +1,7 @@
+import {profileFor, defaultProduct} from './profiles.js?v=airis1';
+export const preferenceKey='airis.preferences.v1';
+const blank=()=>({name:'',defaultProduct,saveHistory:false,reducedMotion:false,history:[]});
+export function normalisePreferences(value){const v=value&&typeof value==='object'?value:{};return {name:typeof v.name==='string'?v.name.slice(0,40):'',defaultProduct:profileFor(v.defaultProduct).id,saveHistory:v.saveHistory===true,reducedMotion:v.reducedMotion===true,history:v.saveHistory===true&&Array.isArray(v.history)?v.history.filter(x=>x&&typeof x.q==='string'&&typeof x.at==='string').slice(0,20).map(x=>({q:x.q.slice(0,300),product:profileFor(x.product).id,at:x.at})):[]};}
+export function createPreferenceStore(storage){let data=blank();let persistent=true;try{data=normalisePreferences(JSON.parse(storage?.getItem(preferenceKey)||'null'));}catch{persistent=false;}
+ return {read:()=>structuredClone(data),isPersistent:()=>persistent,update(patch){data=normalisePreferences({...data,...patch});try{if(!storage)throw new Error('Unavailable');storage.setItem(preferenceKey,JSON.stringify(data));persistent=true;}catch{persistent=false;}return this.read();},record(q,product){if(data.saveHistory)this.update({history:[{q:String(q).slice(0,300),product,at:new Date().toISOString()},...data.history].slice(0,20)});},clearHistory(){return this.update({history:[]});},export(){return {application:'AIRIS',version:1,preferences:this.read()};}};
+}
